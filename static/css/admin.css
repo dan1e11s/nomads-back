@@ -1,0 +1,252 @@
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@600;700&display=swap');
+
+    * {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    #header {
+        background: #FFD593;
+        backdrop-filter: blur(25px);
+        box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.10);
+    }
+
+    #branding #site-name a {
+        color: #000;
+        font-family: 'Cormorant', serif;
+        font-size: 30px;
+    }
+
+    #user-tools {
+        color: #000;
+    }
+
+    #header #user-tools a {
+        color: #000;
+        margin-right: 20px;
+        font-weight: 500;
+        text-decoration: none;
+        border-bottom: 1px solid rgb(0, 0, 0);
+        transition: 100ms;
+    }
+
+    #header #user-tools a:hover {
+        border-bottom: none;
+    }
+
+    #logout-form button i {
+        color: #000;
+        font-size: 15px;
+    }
+
+    #nav-sidebar .current-model {
+        background-color: #dff4ff;
+    }
+
+    #nav-sidebar .current-app .section:link,
+    #nav-sidebar .current-app .section:visited {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    #nav-sidebar .module caption,
+    #nav-sidebar .inline-group {
+        /* background: #FFD593;
+        backdrop-filter: blur(25px); */
+        /* border-top-left-radius: 7px;
+        border-top-right-radius: 7px; */
+    }
+
+    #tabs .ui-tabs-nav {
+        background: #79aec8;
+    }
+
+    .ui-tabs .ui-tabs-nav li.ui-tabs-active {
+        background: #fff;
+        border: 1;
+        border-bottom: none;
+    }
+
+    #tabs .ui-widget-header .ui-tabs-active a,
+    #tabs .ui-widget-header .ui-state-active a{
+        color: #000;
+        padding: 7px;
+    }
+
+    form .ui-state-default,
+    form .ui-widget-content .ui-state-default,
+    form .ui-widget-header .ui-state-default {
+        border: none;
+        background: #79aec8;
+        margin-top: 10px;
+    }
+
+    form .ui-state-default a,
+    form .ui-widget-content .ui-state-default a,
+    form .ui-widget-header .ui-state-default a {
+        color: #fff;
+    }
+
+    #tabs h2 {
+        display: none;
+    }
+
+    div.breadcrumbs {
+        box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.10);
+        width: 50%;
+        border-radius: 10px;
+        margin: 20px;
+
+
+    }
+
+    div.breadcrumbs a {
+
+    }
+
+    div.breadcrumbs a:hover {
+        color: #000;
+    }
+
+    #nav-filter {
+        border-radius: 5px;
+    }
+
+    #nav-sidebar {
+        padding: 10px;
+        border: none;
+    }
+
+    #nav-sidebar .module {
+        box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.10);
+        border-radius: 7px;
+    }
+
+    /* .module table tbody tr:last-child td {
+        border-radius: 7px;
+    } */
+
+
+    #content-related {
+        border-radius: 7px;
+    }
+
+    .log {
+        height: 80vh;
+    }
+
+    .log #header {
+        display: none;
+    }
+
+    .log #main {
+        width: 95%;
+        height: 400px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .log #content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .log #content {
+        width: 400px;
+        border: 1px solid #FFD593;
+        box-shadow: 0px 2px 15px 0px rgba(0, 0, 0, 0.10);
+        background: #FFF8ED;
+        border-radius: 30px;
+        margin: 0 auto;
+    }
+
+    #login-form #id_username,
+    #login-form #id_password {
+        width: 100%;
+        border-radius: 20px;
+    }
+
+    #login-form .form-row label {
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    #login-form .form-row,
+    #login-form .submit-row {
+        margin: 20px 0 20px;
+    }
+
+    #login-form .submit-row input {
+        width: 100%;
+        color: #000;
+        background-color: #FFD593;
+        font-family: 'Montserrat' sans-serif;
+        font-size: 15px;
+        border-radius: 20px;
+        padding: 10px;
+        border: 1px solid #FFD593;
+    }
+
+    @media(min-width: 1025px) {
+        #login-form .form-row {
+            margin-right: 20px;
+        }
+    }
+
+    #login-form .form-row input {
+        font-family: 'Montserrat' sans-serif;
+        padding: 10px;
+        border: 1px solid #FFD593;
+    }
+
+    #login-form {
+        width: 90%;
+        margin: auto;
+    }
+
+    .log #content-main h1 {
+        font-family: 'Cormorant', serif;
+        font-weight: 700;
+        text-align: center;
+        margin: 20px auto 30px;
+        font-size: 30px;
+    }
+
+    .change-form #container #content-main {
+        border: none;
+    }
+
+    .change-form #container #content-main #tour_form {
+        border: none;
+    }
+
+    .addlink {
+        padding-left: 16px;
+        background: url(../../static/img/icon-addlink.svg) 0 1px no-repeat;
+    }
+
+    .changelink {
+        padding-left: 16px;
+        background: url(../../static/img/Icon-changelink.svg) 0 1px no-repeat;
+    }
+
+    .viewlink {
+        padding-left: 16px;
+        background: url(../../static/img/Icon-changelink.svg) 0 1px no-repeat;
+    }
+
+    .signoutlink {
+        padding-left: 20px;
+        background: url(../../static/img/icon-signout.svg) 0 1px no-repeat;
+        border-bottom: none;
+    }
+    #tabs .inline-group .tabular td.original p {
+        display: none;
+    }
+    #tabs #programs-group .inline-related h3 .inline_label,
+    #tabs #accommodations-group .inline-related h3 .inline_label {
+        display: none;
+    }
