@@ -76,4 +76,5 @@ class SliderAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Slider.objects.filter(is_active=True)
-        return queryset
+        sorted_queryset = sorted(queryset, key=lambda obj: obj.id)
+        return sorted_queryset

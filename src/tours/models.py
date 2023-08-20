@@ -160,9 +160,6 @@ class Slider(models.Model):
                                 null=True, blank=True)
     is_active = models.BooleanField(_('Активность'), default=False)
 
-    def __str__(self):
-        return self.title or self.subtitle
-
     class Meta:
         verbose_name = 'Слайдер'
         verbose_name_plural = 'Слайдеры'
