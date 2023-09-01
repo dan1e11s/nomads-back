@@ -19,72 +19,42 @@ class ImagesSerializer(serializers.ModelSerializer):
 class ProgramsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Program
-        fields = ['id', 'day', 'start', 'finish', 'description', 'meals']
+        fields = ['id', 'description']
 
 
-class AccommodationSerializer(serializers.ModelSerializer):
+class RouteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Accommodation
-        fields = ['id', 'location', 'economy_hotel', 'comfort_hotel', ]
-
-
-class TourListSerializer(serializers.ModelSerializer):
-    prices = PricesSerializer(many=True)
-    images = ImagesSerializer(many=True)
-    type_name = serializers.SerializerMethodField()
-    start_day = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Tour
-        fields = ['id', 'title', 'start_day', 'type', 'type_name', 'duration', 'description', 'images', 'prices']
-
-    def get_type_name(self, obj):
-        return dict(Tour.TYPE_CHOICES).get(obj.type)
-
-    def get_start_day(self, obj):
-        if obj.type == 1:
-            if obj.start_day:
-                formatted_date = obj.start_day.strftime('%e %B %Y')
-                return formatted_date
-            return _('Дата началы не указан')
-        return _('Тур не гарантированный')
-
-
-class CategoriesListSerializer(serializers.ModelSerializer):
-    tours = TourListSerializer(many=True)
-
-    class Meta:
-        model = Category
-        fields = ['id', 'name', 'img', 'tours']
+        model = Route
+        fields = ['id', 'day', 'start', 'finish',
+                  'description', 'hotel', 'meals']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    tour_title = serializers.ReadOnlyField(source='tour.title')
+
     class Meta:
         model = TourReviews
-        fields = ['id', 'rating', 'date', 'name', 'email', 'comment', 'tour', 'status']
+        fields = ['id', 'rating', 'date', 'name',
+                  'email', 'comment', 'tour', 'tour_title']
 
 
 class TourDetailSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True)
     programs = ProgramsSerializer(many=True)
     prices = PricesSerializer(many=True)
-    accommodations = AccommodationSerializer(many=True)
+    routes = RouteSerializer(many=True)
     type_name = serializers.SerializerMethodField(read_only=True)
     reviews = ReviewSerializer(many=True)
     start_day = serializers.SerializerMethodField()
-    avg_rating = serializers.FloatField()
+    avg_rating = serializers.DecimalField(max_digits=3, decimal_places=1)
     total_reviews = serializers.IntegerField()
-    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
-        fields = ['url', 'id', 'avg_rating', 'total_reviews', 'title', 'start_day', 'type', 'type_name', 'duration',
+        fields = ['id', 'avg_rating', 'total_reviews', 'title', 'start_day', 'type', 'type_name', 'duration',
                   'description', 'included', 'excluded', 'views', 'images', 'programs',
-                  'prices', 'included', 'excluded', 'accommodations', 'reviews',
+                  'prices', 'included', 'excluded', 'routes', 'reviews',
                   ]
-
-    def get_url(self, obj):
-        return f"http://localhost:8000{obj.get_absolute_url()}"
 
     def get_start_day(self, obj):
         if obj.start_day:
@@ -98,7 +68,8 @@ class TourDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        reviews = instance.reviews.filter(status=1).values('id', 'date', 'rating', 'name', 'comment', 'date_created')
+        reviews = instance.reviews.filter(status=1).values(
+            'id', 'date', 'rating', 'name', 'comment', 'date_created')
 
         for review in reviews:
             date_created = review['date_created']
@@ -111,8 +82,8 @@ class TourDetailSerializer(serializers.ModelSerializer):
 
 
 class GuaranteedToursSerializer(serializers.ModelSerializer):
-    images = ImagesSerializer(many=True)
-    prices = PricesSerializer(many=True)
+    img = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
     start_day = serializers.SerializerMethodField()
     avg_rating = serializers.FloatField()
     total_reviews = serializers.IntegerField()
@@ -121,7 +92,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ['id', 'cat_name', 'title', 'description', 'duration', 'start_day', 'avg_rating', 'total_reviews',
-                  'images', 'prices']
+                  'img', 'price']
 
     def get_start_day(self, obj):
         if obj.start_day:
@@ -130,9 +101,83 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
     def get_cat_name(self, obj):
         if obj.cat:
             return obj.cat.name
+        
+    def get_img(self, obj):
+        images = obj.images.all()
+        if images:
+            return f'http://77.232.128.13:8000{images[0].img.url}'
+        return None
+    
+    def get_price(self, obj):
+        prices = obj.prices.all()
+        if prices:
+            return min(i.economy for i in prices)
+        return None
 
 
 class SliderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slider
         fields = '__all__'
+
+
+class CreateYourTourSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CreateOwnTour
+        fields = '__all__'
+
+# Main Page Data
+
+
+class MainCatToursSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = ['id', 'title']
+
+
+class MainCategoriesSerializer(serializers.ModelSerializer):
+    tours = MainCatToursSerializer(many=True)
+    img = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'img', 'tours']
+        
+    def get_img(self, obj):
+        if obj.img:
+            return f'http://77.232.128.13:8000{obj.img.url}'
+        return None
+        
+
+class MainToursSerializer(serializers.ModelSerializer):
+    img = serializers.SerializerMethodField()
+    start_day = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tour
+        fields = ['id', 'title', 'start_day', 'price', 'img']
+
+
+    def get_start_day(self, obj):
+        if obj.type == 1:
+            if obj.start_day:
+                formatted_date = obj.start_day.strftime('%e %B')
+                return formatted_date
+            return _('Дата началы не указан')
+        return _('Тур не гарантированный')
+    
+    def get_price(self, obj):
+        prices = obj.prices.all()
+        if prices:
+            min_price = min(i.economy for i in prices)
+            return min_price
+        return None
+    
+    def get_img(self, obj):
+        first_img = obj.images.all()
+        if first_img:
+            return f'http://77.232.128.13:8000{first_img[0].img.url}'
+        return None
+

@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import *
 
 
-class SendCreateFeedbackSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Feedback
-        fields = ['name', 'email', 'phone', 'comment', 'created_at']
+# class SendCreateFeedbackSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Feedback
+#         fields = ['name', 'email', 'phone', 'comment', 'created_at']
 
 
 class SendCreateRequestSerializer(serializers.ModelSerializer):
@@ -25,4 +25,18 @@ class SendCreateRequestSerializer(serializers.ModelSerializer):
 class SiteReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteReviews
-        fields = ['full_name', 'mark', 'text', 'photo']
+        fields = ['firstname', 'lastname', 'mark', 'text', 'photo']
+
+
+class QuestoinAndAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ['question', 'answer']
+
+
+class FAQSerializer(serializers.ModelSerializer):
+    faq = QuestoinAndAnswerSerializer(many=True)
+    
+    class Meta:
+        model = FAQ
+        fields = ['name', 'faq']

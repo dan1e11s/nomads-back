@@ -1,27 +1,29 @@
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.filters import SearchFilter
 from .serializers import *
 from .models import *
 
 from src.tg_bot.bot import send_feedback, send_request, new_site_review
+from src.base.pagination import ReviewsListPagination
 from asyncio import run
 
 
-class SendCreateFeedbackAPIView(generics.CreateAPIView):
-    serializer_class = SendCreateFeedbackSerializer
-    queryset = Feedback.objects.all()
+# class SendCreateFeedbackAPIView(generics.CreateAPIView):
+#     serializer_class = SendCreateFeedbackSerializer
+#     queryset = Feedback.objects.all()
 
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
-            msg = run(send_feedback(serializer.data))
-            if msg:
-                return Response({'response': True}, status=status.HTTP_200_OK)
-            return Response({'response': False})
-        return Response({'response': False, 'error': serializer.errors})
+#         if serializer.is_valid():
+#             serializer.save()
+#             msg = run(send_feedback(serializer.data))
+#             if msg:
+#                 return Response({'response': True}, status=status.HTTP_200_OK)
+#             return Response({'response': False})
+#         return Response({'response': False, 'error': serializer.errors})
 
 
 class SendCreateRequestAPIView(generics.CreateAPIView):
@@ -42,6 +44,7 @@ class SendCreateRequestAPIView(generics.CreateAPIView):
 
 class SiteReviewsListAPIView(generics.ListAPIView):
     serializer_class = SiteReviewSerializer
+    pagination_class = ReviewsListPagination
 
     def get_queryset(self):
         queryset = SiteReviews.objects.filter(status=1)
@@ -62,3 +65,10 @@ class SiteReviewsCreateAPIView(generics.CreateAPIView):
                 return Response({'response': True})
             return Response({'response': False})
         return Response({'response': False, 'error': serializer.errors})
+
+
+class FAQAPIView(generics.ListAPIView):
+    serializer_class = FAQSerializer
+    queryset = FAQ.objects.prefetch_related('faq')
+    search_fields = ['name', 'faq__question']
+    filter_backends = [SearchFilter]

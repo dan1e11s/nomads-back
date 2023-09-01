@@ -20,6 +20,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,7 +32,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'debug_toolbar',
-    'tabbed_admin',
     'drf_yasg',
     'rest_framework',
     'src.tours',
@@ -77,14 +77,21 @@ WSGI_APPLICATION = 'nomad.wsgi.application'
 AUTH_USER_MODEL = 'account.User'
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "postgres",
+#         "USER": "postgres",
+#         "PASSWORD": "postgres",
+#         "HOST": "db",
+#         "PORT": 5432,
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",
-        "PORT": 5432,
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -121,7 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -147,7 +154,7 @@ CKEDITOR_CONFIGS = {
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 
-TABBED_ADMIN_USE_JQUERY_UI = True
+# TABBED_ADMIN_USE_JQUERY_UI = True
 
 INTERNAL_IPS = [
     '172.18.0.3',
@@ -165,12 +172,33 @@ DEBUG_TOOLBAR_CONFIG = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'http://localhost:3001',
+    'https://tour-kg-fuvu.vercel.app',
 ]
+
 CORS_ALLOW_METHODS = [
-    'DELETE',
     'GET',
     'OPTIONS',
     'PATCH',
     'POST',
     'PUT',
 ]
+
+from rest_framework.permissions import IsAdminUser
+
+JAZZMIN_SETTINGS = {
+    "icons": {
+        "account": "fas fa-users-cog",
+        "account.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+	"car_rent":"fa fa-car",
+	"car_rent.car": "fa fa-car",
+	"car_rent.cartype": "fa fa-car",
+	"car_rent.brand": "fa fa-car",
+	"car_rent.carrentalrequest": "fa fa-car",
+	"clients.requests": "fa fa-id-card",
+	"clients.sitereviews": "fas fa-child",
+	"cleints.faq": "fas fa-user"
+    },
+    "navigation_expanded": True,
+}

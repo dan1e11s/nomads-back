@@ -1,23 +1,18 @@
 from rest_framework.response import Response
-from rest_framework import generics, status, filters
+from rest_framework import generics, status, filters, views
 from django.db.models import Prefetch, Avg, Count, Q, Sum
 from .models import *
 from .serializers import *
 from .pagination import GuaranteedToursPagination
-
-
-class CategoriesListAPIView(generics.ListAPIView):
-    serializer_class = CategoriesListSerializer
-    queryset = Category.objects.prefetch_related(
-        Prefetch('tours', queryset=Tour.objects.select_related('cat').prefetch_related('prices', 'images'))
-    )
+from src.tg_bot.bot import send_tour_review, your_tour_create
+from asyncio import run
 
 
 class TourDetailAPIView(generics.RetrieveAPIView):
     serializer_class = TourDetailSerializer
 
     def get_queryset(self):
-        queryset = Tour.objects.prefetch_related('images', 'programs', 'prices', 'accommodations').all()
+        queryset = Tour.objects.prefetch_related('images', 'programs', 'prices', 'routes').all()
         tours = queryset.annotate(avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
                                   total_reviews=Count('reviews', filter=Q(reviews__status=1)))
 
@@ -37,22 +32,16 @@ class ReviewCreateAPIView(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     queryset = TourReviews.objects.all()
 
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
 
-class TopToursAPIView(generics.ListAPIView):
-    serializer_class = TourListSerializer
-
-    def get_queryset(self):
-        top_tours = Tour.objects.filter(top=True).prefetch_related('images', 'prices')
-        return top_tours
-
-
-class TourListAPIVIew(generics.ListAPIView):
-    serializer_class = TourListSerializer
-
-    def get_queryset(self):
-        cat_id = self.kwargs['cat_id']
-        queryset = Tour.objects.filter(cat_id=cat_id).select_related('cat').prefetch_related('prices', 'images')
-        return queryset
+        if serializer.is_valid():
+            serializer.save()
+            msg = run(send_tour_review(serializer.data))
+            if msg:
+                return Response({'response': True})
+            return Response({'response': False})
+        return Response({'response': False, 'error': serializer.errors})
 
 
 class GuaranteedToursAPIView(generics.ListAPIView):
@@ -61,7 +50,7 @@ class GuaranteedToursAPIView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     serializer_class = GuaranteedToursSerializer
 
-    # pagination_class = GuaranteedToursPagination
+    pagination_class = GuaranteedToursPagination
 
     def get_queryset(self):
         tours = Tour.objects.filter(type=1).prefetch_related('prices', 'images', )
@@ -78,3 +67,36 @@ class SliderAPIView(generics.ListAPIView):
         queryset = Slider.objects.filter(is_active=True)
         sorted_queryset = sorted(queryset, key=lambda obj: obj.id)
         return sorted_queryset
+    
+    
+class MainPageAPIView(views.APIView):
+    def get(self, request, *args, **kwargs):
+        tours = Tour.objects.filter(top=True).prefetch_related('images', 'prices')
+        categories = Category.objects.prefetch_related('tours')
+        
+        tours_serializer = MainToursSerializer(tours, many=True)
+        categories_serializer = MainCategoriesSerializer(categories, many=True)
+        
+        response_data = {
+            "tours": tours_serializer.data,
+            "categories": categories_serializer.data,
+        }
+        
+        return Response(response_data)
+
+
+class CreateYourTourAPIView(generics.CreateAPIView):
+    serializer_class = CreateYourTourSerializer
+    queryset = CreateOwnTour.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            msg = run(your_tour_create(serializer.data))
+            if msg:
+                return Response({'response': True})
+            return Response({'response': False})
+        return Response({'response': False, 'error': serializer.error})
+

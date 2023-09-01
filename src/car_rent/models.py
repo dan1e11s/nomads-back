@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from ckeditor.fields import RichTextField
 
 
 class CarType(models.Model):
@@ -64,14 +65,37 @@ class Car(models.Model):
         (0, _('Не доступно')),
         # (3, _('В ремонте')),
     )
+    
+    CONDITIONER_CHOICES = (
+        (True, _('Есть')),
+        (False, _('Нет'))
+    )
+    
+    ECONOMY_CHOICES = (
+        (True, _('Есть')),
+        (False, _('Нет'))
+    )
+    
+    
+    REAR_VIEW_CHOICES = (
+        (True, _('Есть')),
+        (False, _('Нет'))
+    )
 
-    type = models.ForeignKey(CarType, verbose_name=_('Тип авто'), on_delete=models.CASCADE)
+    type = models.ForeignKey(CarType, verbose_name=_('Тип авто'), on_delete=models.CASCADE, related_name='cars')
     brand = models.ForeignKey(Brand, verbose_name=_('Марка автомобиля'), on_delete=models.CASCADE)
     model = models.CharField(_('Модель'), max_length=255, null=True, blank=True)
     seats = models.IntegerField(_('Кол-во пассажиров'), null=True, blank=True)
     year = models.IntegerField(_('Год'), null=True, blank=True)
     rating = models.IntegerField(_('Рейтинг'), choices=RATING_CHOICES, default=5)
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=1)
+    proccess = RichTextField(_('Процесс аренды'), null=True, blank=True)
+    features = RichTextField(_('Преимущества и особенности'), null=True, blank=True)
+    conditioner = models.BooleanField(_('Кондиционер'), choices=CONDITIONER_CHOICES, default=False)
+    economy = models.BooleanField(_('Экономичность'), choices=ECONOMY_CHOICES, default=True)
+    rear_view = models.BooleanField(_('Камера заднего вида'), choices=REAR_VIEW_CHOICES, default=False)
+    bluetooth = models.BooleanField(_('Bluetooth'), choices=CONDITIONER_CHOICES, default=True)
+    
 
     def __str__(self):
         return self.model

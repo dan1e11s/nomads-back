@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from src.tours.models import Tour
+from ckeditor.fields import RichTextField
 
 
 class Information(models.Model):
@@ -37,13 +38,19 @@ class Information(models.Model):
 
 
 class Requests(models.Model):
+    STATUS_CHOICES = (
+        (1, _('Обслужено')),
+        (0, _('Не обслужено')),
+    )
+    
     tour = models.ForeignKey(Tour, verbose_name=_('Желаемый тур'), on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=0)
     first_name = models.CharField(_('Имя'), max_length=100)
     last_name = models.CharField(_('Фамилия'), max_length=100)
     email = models.EmailField(_('Адрес электронной почты'), max_length=100)
     phone = models.CharField(_('Телефон'), max_length=100)
     size = models.IntegerField(_('Размер группы'))
-    budget = models.CharField(_('Бюджет на человека'), max_length=100)
+    budget = models.CharField(_('Бюджет на человека'), max_length=100, null=True, blank=True)
     message = models.TextField(_('Сообщение'))
     newsletter = models.BooleanField(_('Рассылка'), default=False)
     contact = models.BooleanField(_('Связаться'), default=False)
@@ -92,16 +99,42 @@ class SiteReviews(models.Model):
         (5, 5),
     )
 
-    full_name = models.CharField(_('ФИО'), max_length=255)
+    firstname = models.CharField(_('Имя'), max_length=255, null=True, blank=True)
+    lastname = models.CharField(_('Фамилия'), max_length=255, null=True, blank=True)
     mark = models.IntegerField(_('Оценка'), choices=MARK_CHOICES, default=5)
     text = models.TextField(_('Отзыв'), null=True, blank=True)
-    photo = models.ImageField(_('Фото'), default='profile_photos/profile.png')
-    created_at = models.DateField(_('Создан в'), auto_now_add=True)
+    photo = models.ImageField(_('Фото'), default='default_profile_photo.png', upload_to='avatars')
+    created_at = models.DateTimeField(_('Создан в'), auto_now_add=True)
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=2)
 
     def __str__(self):
-        return self.full_name
+        return ''
 
     class Meta:
-        verbose_name = 'Отзыв клиента'
-        verbose_name_plural = 'Отзывы клиентов'
+        verbose_name = 'Впечатления клиента'
+        verbose_name_plural = 'Впечатления наших клиентов'
+
+    
+class FAQ(models.Model):
+    name = models.CharField(_('Категория FAQ'), max_length=255, null=True, blank=True)
+    
+    class Meta:
+        verbose_name = _('Вопрос и ответ')
+        verbose_name_plural = _('Часто задаваемые вопросы')
+        
+    def __str__(self):
+        return self.name
+
+
+
+class Answer(models.Model):
+    faq = models.ForeignKey(FAQ, on_delete=models.CASCADE, null=True, blank=True, related_name='faq')
+    question = models.CharField(_('Вопрос'), max_length=255, null=True, blank=True)
+    answer = RichTextField(_('Ответ'), null=True, blank=True)
+    
+    class Meta:
+        verbose_name = _('Вопрос и ответет')
+        verbose_name_plural = _('Вопросы и ответы')
+        
+    def __str__(self):
+        return self.question    

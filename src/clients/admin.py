@@ -1,5 +1,4 @@
 from django.contrib import admin
-from tabbed_admin.admin import TabbedModelAdmin
 from django.utils.safestring import mark_safe
 from .models import *
 
@@ -10,27 +9,13 @@ class InformationInline(admin.StackedInline):
 
 
 @admin.register(Requests)
-class RequestsAdmin(TabbedModelAdmin):
+class RequestsAdmin(admin.ModelAdmin):
     model = Requests
-    list_display = ('get_full_name', 'budget', 'contact', 'newsletter', 'created_at')
+    list_display = ('get_full_name', 'status', 'contact', 'newsletter', 'created_at')
     search_fields = ('first_name', 'last_name', 'email', 'phone', 'message',)
     list_filter = ('contact', 'newsletter',)
-
-    tab_overview = (
-        ('ЗАПРОС', {
-            'fields': (
-                'contact', 'newsletter', 'tour', 'first_name', 'last_name', 'email', 'phone', 'size', 'budget',
-                'message',
-            )
-        }),
-    )
-
-    tab_information = (InformationInline,)
-
-    tabs = [
-        ('Запрос', tab_overview,),
-        ('Информация о клиенте', tab_information,)
-    ]
+    list_editable = ('status',)
+    inlines = (InformationInline,)
 
     def has_add_permission(self, request):
         return False
@@ -60,10 +45,22 @@ class FeedbackAdmin(admin.ModelAdmin):
 
 @admin.register(SiteReviews)
 class SiteReviewsAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'mark', 'status', 'created_at',)
-    list_display_links = ('full_name',)
+    list_display = ('firstname', 'lastname', 'mark', 'status', 'created_at',)
+    list_display_links = ('firstname',)
     list_editable = ('status',)
-    readonly_fields = ('full_name', 'mark', 'text', 'photo', 'created_at',)
+    readonly_fields = ('firstname', 'lastname', 'mark', 'text', 'photo', 'created_at',)
 
     def has_add_permission(self, request):
         return False
+
+
+class FAQInline(admin.StackedInline):
+    model = Answer
+    extra = 0
+    
+    
+@admin.register(FAQ)
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_display_links = ('name',)
+    inlines = (FAQInline,)

@@ -1,5 +1,4 @@
 from django.contrib import admin
-from tabbed_admin import TabbedModelAdmin
 from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
 from .models import *
@@ -18,8 +17,8 @@ class PricesInline(admin.TabularInline):
     extra = 0
 
 
-class AccommodationInline(admin.StackedInline):
-    model = Accommodation
+class RouteInline(admin.StackedInline):
+    model = Route
     extra = 0
 
 
@@ -29,40 +28,16 @@ class ImagesInline(admin.TabularInline):
 
 
 @admin.register(Tour)
-class TourAdmin(TabbedModelAdmin):
+class TourAdmin(admin.ModelAdmin):
     model = Tour
-    list_display = ('title', 'type', 'cat', 'top',)
+    list_display = ('id', 'title', 'type', 'cat', 'top',)
+    list_display_links = ('id', 'title',)
     list_editable = ('top',)
     list_filter = ('top', 'type', 'cat', 'duration',)
     search_fields = ('title', 'type', 'duration',)
     search_help_text = 'Поиск по всем данным'
     readonly_fields = ('views',)
-
-    tab_overview = (
-        ('ОСНОВНЫЕ', {
-            'fields': (
-                'type', 'top', 'title', 'start_day', 'cat', 'duration', 'description', 'included', 'excluded', 'views')
-        }),
-    )
-
-    tab_programs = (ProgramInline,)
-    tab_prices = (PricesInline,)
-    tab_accommodation = (AccommodationInline,)
-    tab_images = (ImagesInline,)
-
-    tabs = [
-        ('Основные', tab_overview,),
-        ('Программы', tab_programs,),
-        ('Цены', tab_prices,),
-        ('Картинки', tab_images,),
-        ('Проживание', tab_accommodation,),
-    ]
-
-    # def get_absolute_url(self, obj):
-    #     return '<a href="{0}" target="_blank">{0}</a>'.format(obj.get_absolute_url())
-    #
-    # get_absolute_url.allow_tags = True
-    # get_absolute_url.short_description = 'Absolute URL'
+    inlines = (ProgramInline, PricesInline, RouteInline, ImagesInline)
 
 
 @admin.register(TourReviews)
@@ -70,11 +45,10 @@ class TourReviewsAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'date', 'rating', 'status', 'date_created',)
     list_display_links = ('name', 'email',)
     list_editable = ('status',)
-    search_fields = ('name', 'email', 'date', 'comment',)
-    list_filter = ('status', 'rating',)
+    search_fields = ('name', 'email', 'date', 'comment', 'tour')
+    list_filter = ('status', 'rating', 'tour',)
 
     def has_add_permission(self, request):
-        print(request.user)
         return False
 
 
@@ -101,3 +75,16 @@ class SliderAdmin(admin.ModelAdmin):
             return mark_safe(f"<img src='{object.img.url}' height='60'>")
 
     get_html_img.short_description = 'Изображение'
+
+
+@admin.register(CreateOwnTour)
+class CreateYourTourAdmin(admin.ModelAdmin):
+    list_display = ('name_tour', 'method', 'status', 'date_start',)
+    list_display_links = ('name_tour', 'method',)
+    list_editable = ('status',)
+    search_fields = ('name_tour', 'method', 'date_start', 'comment',)
+    list_filter = ('name_tour',)
+
+
+    
+    
