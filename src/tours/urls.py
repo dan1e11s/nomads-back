@@ -9,4 +9,5 @@ urlpatterns = [
     path('slider', SliderAPIView.as_view(), name='main-page-slider'),
     path('main', MainPageAPIView.as_view(), name='main'),
     path('create-your-tour', CreateYourTourAPIView.as_view(), name='your-tour'),
+    path('request', TourRequestAPIView.as_view(), name='request-tour')
 ]

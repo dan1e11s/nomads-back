@@ -38,6 +38,7 @@ class ReviewSerializer(serializers.ModelSerializer):
                   'email', 'comment', 'tour', 'tour_title']
 
 
+
 class TourDetailSerializer(serializers.ModelSerializer):
     images = ImagesSerializer(many=True)
     programs = ProgramsSerializer(many=True)
@@ -101,13 +102,13 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
     def get_cat_name(self, obj):
         if obj.cat:
             return obj.cat.name
-        
+
     def get_img(self, obj):
         images = obj.images.all()
         if images:
             return f'http://77.232.128.13:8000{images[0].img.url}'
         return None
-    
+
     def get_price(self, obj):
         prices = obj.prices.all()
         if prices:
@@ -122,10 +123,10 @@ class SliderSerializer(serializers.ModelSerializer):
 
 
 class CreateYourTourSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CreateOwnTour
         fields = '__all__'
+
 
 # Main Page Data
 
@@ -143,12 +144,12 @@ class MainCategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'img', 'tours']
-        
+
     def get_img(self, obj):
         if obj.img:
             return f'http://77.232.128.13:8000{obj.img.url}'
         return None
-        
+
 
 class MainToursSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
@@ -159,7 +160,6 @@ class MainToursSerializer(serializers.ModelSerializer):
         model = Tour
         fields = ['id', 'title', 'start_day', 'price', 'img']
 
-
     def get_start_day(self, obj):
         if obj.type == 1:
             if obj.start_day:
@@ -167,17 +167,35 @@ class MainToursSerializer(serializers.ModelSerializer):
                 return formatted_date
             return _('Дата началы не указан')
         return _('Тур не гарантированный')
-    
+
     def get_price(self, obj):
         prices = obj.prices.all()
         if prices:
             min_price = min(i.economy for i in prices)
             return min_price
         return None
-    
+
     def get_img(self, obj):
         first_img = obj.images.all()
         if first_img:
             return f'http://77.232.128.13:8000{first_img[0].img.url}'
         return None
 
+
+class TourRequestSerializer(serializers.ModelSerializer):
+    tour_name = serializers.CharField(source='tour.name', read_only=True)
+
+    class Meta:
+        model = TourRequest
+        fields = ['tour', 'status', 'first_name', 'last_name',
+                  'email', 'phone', 'acc', 'size', 'start', 'end',
+                  'comment', 'tour_name', 'acc_name']
+
+
+class TourSerializer(serializers.ModelSerializer):
+    tour_title = serializers.ReadOnlyField(source='tour.title')
+
+    class Meta:
+        model = TourRequest
+        fields = ['id', 'tour', 'first_name', 'last_name',
+                  'email', 'phone', 'tour_title', 'comment']

@@ -93,7 +93,6 @@ async def send_tour_review(data):
               f"Имя: <b>{data['name']}</b> \n" \
               f"Почта: <b>{data['email']}</b> \n" \
               f"Оценка: <b>{data['rating']} из 5</b> \n" \
-              f"Статус: <b>Не проверено</b> \n" \
               f"{data['comment']}"
         await bot.send_message(CHAT_ID, msg)
         return True
@@ -104,14 +103,28 @@ async def your_tour_create(data):
     if data:
         msg = f"Название тура: <b>{data['name_tour']}</b> \n"\
               f"Жилье: <b>{data['accommodation']}</b> \n"\
-              f"Транспорт: <b>{data['transport']}</b> \n"\
               f"Питание: <b>{data['meat']}</b> \n"\
               f"Кол-во людей: <b>{data['people']}</b> \n"\
               f"Способы связи: <b>{data['method']}</b> \n"\
-              f"Статус: <b>{data['status']}</b> \n"\
+              f"Транспорт: <b>{data['transport']}</b> \n"\
               f"Дата начала: <b>{data['date_start']}</b> \n"\
               f"Дата окончания: <b>{data['date_end']}</b> \n"\
               f"Комментарии и дополнительная информация: <b>{data['comment']}</b> \n"
+        await bot.send_message(CHAT_ID, msg)
+        return True
+    return False
+
+
+
+async def tour_request(data):
+    if data:
+        msg = f"<b>Новый запрос на тур {data['tour_title']}!!!</b> \n\n" \
+              f"Имя: <b>{data['first_name']}</b> \n"\
+              f"Фамилия: <b>{data['last_name']}</b> \n"\
+              f"Адрес электронной: <b>{data['email']}</b> \n"\
+              f"Телефон: <b>{data['phone']}</b> \n"\
+              f"Комментарий и дополнительная информация: <b>{data['comment']}</b> \n"
+
         await bot.send_message(CHAT_ID, msg)
         return True
     return False

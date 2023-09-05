@@ -5,7 +5,6 @@ import locale
 
 
 def last_12_months_choices():
-    # Define Russian month names
     russian_month_names = {
         1: 'Январь',
         2: 'Февраль',

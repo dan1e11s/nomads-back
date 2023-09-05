@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from .choices import last_12_months_choices
 from ckeditor.fields import RichTextField
 from django.urls import reverse
+from src.car_rent.models import CarType
 
 
 
@@ -88,18 +89,18 @@ class TourReviews(models.Model):
         (2, 'Не проверено'),
     )
 
-    RATING_CHOICES = (
-        (5, _('Отлично')),
-        (4, _('Хорошо')),
-        (3, _('Неплохо')),
-        (2, _('Плохо')),
-        (1, _('Ужасно')),
-    )
+    # RATING_CHOICES = (
+    #     (5, _('Отлично')),
+    #     (4, _('Хорошо')),
+    #     (3, _('Неплохо')),
+    #     (2, _('Плохо')),
+    #     (1, _('Ужасно')),
+    # )
 
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=2)
     tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE,
                              null=True, blank=True, related_name='reviews')
-    rating = models.DecimalField(_('Рейтинг'), choices=RATING_CHOICES, null=True, blank=True, max_digits=5, decimal_places=1)
+    rating = models.DecimalField(_('Рейтинг'), null=True, blank=True, max_digits=5, decimal_places=1)
     date = models.CharField(_('Посетил'), max_length=50, choices=last_12_months_choices(), null=True, blank=True)
     name = models.CharField(_('Имя'), max_length=100, null=True, blank=True)
     email = models.EmailField(_('Электронная почта'), max_length=100, null=True, blank=True)
@@ -112,17 +113,6 @@ class TourReviews(models.Model):
     class Meta:
         verbose_name = _('Отзыв')
         verbose_name_plural = _('Отзывы')
-        
-    
-class Acc(models.Model):
-    name = models.CharField(_('Размещение'), max_length=100, null=True, blank=True)
-    
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Размещение')
-        verbose_name_plural = _('Размещение')
     
 
 class TourRequest(models.Model):
@@ -131,17 +121,14 @@ class TourRequest(models.Model):
         (0, _('Не обслужено')),
     )
     
-    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True)
+    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True,
+                                            related_name='TourRequest')
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=0)
     first_name = models.CharField(_('Имя'), max_length=100, null=True, blank=True)
     last_name = models.CharField(_('Фамилия'), max_length=100, null=True, blank=True)
     email = models.EmailField(_('Адрес электронной почты'), max_length=100, null=True, blank=True)
     phone = models.CharField(_('Телефон'), max_length=100, null=True, blank=True)
-    acc = models.ForeignKey(Acc, verbose_name=_('Размещение'), on_delete=models.CASCADE, null=True, blank=True)
-    size = models.IntegerField(_('Кол-во человек'), null=True, blank=True)
-    start = models.DateField(_('Дата начала'), null=True, blank=True)
-    end = models.DateField(_('Дата окончания'), null=True, blank=True)
-    comment = models.TextField(_('Коментарии и дополнительная информация'), null=True)
+    comment = models.TextField(_('Комментарий'))
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -201,18 +188,11 @@ class Slider(models.Model):
 
 
 class CreateOwnTour(models.Model):
-    HOUS_CHOICES = (
+    ACCOMMODATION_CHOICES = (
         ('Отель', 'Отель'),
         ('Юрта', 'Юрта'),
         ('Гостиница', 'Гостиница'),
         ('Палата', 'Палата'),
-    )
-
-    TRANSPORT_CHOICES = (
-        ('Эконом', 'Эконом'),
-        ('Комфорт', 'Комфорт'),
-        ('Бизнес', 'Бизнес'),
-        ('Минивен', 'Минивен'),
     )
 
     MEAT_CHOICES = (
@@ -223,9 +203,13 @@ class CreateOwnTour(models.Model):
     )
 
     PEOPLE_CHOICES = (
+        (1, '1'),
         (2, '2'),
+        (3, '3'),
         (4, '4'),
+        (5, '5'),
         (6, '6'),
+        (7, '7'),
         (8, '8'),
     )
 
@@ -236,19 +220,13 @@ class CreateOwnTour(models.Model):
         ('Телеграмм', 'Телеграмм'),
     )
 
-    STATUS_CHOICES = (
-        (1, 'Обслужено'),
-        (0, 'Не обслужено'),
-    )
-
     # Контактные данные
     name_tour = models.CharField(_('Название тура'), max_length=255, null=True, blank=True)
-    accommodation = models.CharField(_('Жилье'), max_length=100, choices=HOUS_CHOICES, null=True, blank=True)
-    transport = models.CharField(_('Транспорт'), max_length=100, choices=TRANSPORT_CHOICES, null=True, blank=True)
-    meat = models.CharField(_('Питание'), max_length=100, choices=MEAT_CHOICES, null=True, blank=True)
+    accommodation = models.CharField(_('Жилье'), choices=ACCOMMODATION_CHOICES, max_length=100, null=True, blank=True)
+    transport = models.ForeignKey(CarType, verbose_name=_('Транспорт'), on_delete=models.CASCADE, null=True, blank=True)
+    meat = models.CharField(_('Питание'), choices=MEAT_CHOICES, max_length=100, null=True, blank=True)
     people = models.IntegerField(_('Кол-во людей'), choices=PEOPLE_CHOICES, null=True, blank=True)
-    method = models.CharField(_('Способы связи'), max_length=100, choices=METHOD_CHOICES, null=True, blank=True)
-    status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=0)
+    method = models.CharField(_('Способы связи'), choices=METHOD_CHOICES, max_length=100, null=True, blank=True)
 
     # Информация о путешествии
     comment = models.TextField(_('Комментарий и дополнительная информация'), null=True, blank=True)
@@ -261,10 +239,4 @@ class CreateOwnTour(models.Model):
     class Meta:
         verbose_name = _('Создай свой тур')
         verbose_name_plural = _('Создайте свои туры')
-
-
-
-
-
-
         

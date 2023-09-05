@@ -4,7 +4,7 @@ from django.db.models import Prefetch, Avg, Count, Q, Sum
 from .models import *
 from .serializers import *
 from .pagination import GuaranteedToursPagination
-from src.tg_bot.bot import send_tour_review, your_tour_create
+from src.tg_bot.bot import send_tour_review, your_tour_create, tour_request
 from asyncio import run
 
 
@@ -98,5 +98,44 @@ class CreateYourTourAPIView(generics.CreateAPIView):
             if msg:
                 return Response({'response': True})
             return Response({'response': False})
-        return Response({'response': False, 'error': serializer.error})
+        return Response({'response': False, 'error': serializer.errors})
+
+    def get(self, request, *args, **kwargs):
+        data = {
+            'accommodation_choices': [{'name': label} for key, label in CreateOwnTour.ACCOMMODATION_CHOICES],
+            'meat_choices': [{'name': label} for key, label in CreateOwnTour.MEAT_CHOICES],
+            'people_choices': [{'name': str(label)} for key, label in CreateOwnTour.PEOPLE_CHOICES],
+            'method_choices': [{'name': label} for key, label in CreateOwnTour.METHOD_CHOICES],
+        }
+
+        return Response(data)
+
+
+class TourRequestAPIView(generics.CreateAPIView):
+    serializer_class = TourSerializer
+    queryset = TourRequest.objects.all()
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            msg = run(tour_request(serializer.data))
+            if msg:
+                return Response({'response': True})
+            return Response({'response': False})
+        return Response({'response': False, 'error': serializer.errors})
+
+    # def get(self, request, *args, **kwargs):
+    #     tour = TourRequest.objects.all()
+    #     acc = TourRequest.objects.all()
+
+    #     tours_serializer = TourSerializer(tour, many=True)
+    #     acc_serializer = AccSerializer(acc, many=True)
+
+    #     return Response({
+    #         'tours': tours_serializer.data,
+    #         'accs': acc_serializer.data
+    #     })
+
 

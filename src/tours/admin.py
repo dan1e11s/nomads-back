@@ -78,12 +78,24 @@ class SliderAdmin(admin.ModelAdmin):
 
 
 @admin.register(CreateOwnTour)
-class CreateYourTourAdmin(admin.ModelAdmin):
-    list_display = ('name_tour', 'method', 'status', 'date_start',)
-    list_display_links = ('name_tour', 'method',)
-    list_editable = ('status',)
+class CreateOwnTourAdmin(admin.ModelAdmin):
+    list_display = ('name_tour', 'method', 'date_start',)
+    list_display_links = ('method',)
     search_fields = ('name_tour', 'method', 'date_start', 'comment',)
     list_filter = ('name_tour',)
+
+
+@admin.register(TourRequest)
+class TourRequestAdmin(admin.ModelAdmin):
+    model = TourRequest
+    list_display = ('first_name', 'last_name', 'status', 'phone', 'email',)
+    list_display_links = ('email', 'first_name', 'last_name',)
+    list_editable = ('status',)
+    list_filter = ('status',)
+
+
+
+
 
 
     
