@@ -41,7 +41,7 @@ class ReviewCreateAPIView(generics.CreateAPIView):
             if msg:
                 return Response({'response': True})
             return Response({'response': False})
-        return Response({'response': False, 'error': serializer.errors})
+        return Response({'response': False, 'errors': serializer.errors})
 
 
 class GuaranteedToursAPIView(generics.ListAPIView):
@@ -98,7 +98,7 @@ class CreateYourTourAPIView(generics.CreateAPIView):
             if msg:
                 return Response({'response': True})
             return Response({'response': False})
-        return Response({'response': False, 'error': serializer.errors})
+        return Response({'response': False, 'errors': serializer.errors})
 
     def get(self, request, *args, **kwargs):
         data = {
@@ -124,7 +124,7 @@ class TourRequestAPIView(generics.CreateAPIView):
             if msg:
                 return Response({'response': True})
             return Response({'response': False})
-        return Response({'response': False, 'error': serializer.errors})
+        return Response({'response': False, 'errors': serializer.errors})
 
     # def get(self, request, *args, **kwargs):
     #     tour = TourRequest.objects.all()

@@ -47,7 +47,7 @@ class CarRequestAPIView(generics.CreateAPIView):
             if msg:
                 return Response({'response': True})
             return Response({'response': False})
-        return Response({'response': False, 'error': serializer.errors})
+        return Response({'response': False, 'errors': serializer.errors})
 
 
 class OptionsAPIView(views.APIView):
