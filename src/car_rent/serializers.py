@@ -59,15 +59,12 @@ class CarDetailSerializer(serializers.ModelSerializer):
 
 
 class CarRequestSerializer(serializers.ModelSerializer):
-    brand_name = serializers.CharField(source='brand.name', read_only=True)
-    type_auto_name = serializers.CharField(
-        source='type_auto.name', read_only=True)
+    model = serializers.ReadOnlyField(source='car.model')
 
     class Meta:
         model = CarRentalRequest
-        fields = ['name', 'type_auto', 'brand', 'seats', 'email',
-                  'phone', 'date_start', 'date_end', 'comment',
-                  'brand_name', 'type_auto_name']
+        fields = ['car', 'first_name', 'last_name', 'email',
+                  'phone', 'comment', 'model']
 
 
 class BrandSerializer(serializers.ModelSerializer):

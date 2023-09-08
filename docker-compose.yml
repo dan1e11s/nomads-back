@@ -2,7 +2,7 @@ version: "3.9"
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn --bind 0.0.0.0:8000 nomad.wsgi
     volumes:
       - .:/code
     ports:
@@ -13,8 +13,16 @@ services:
     image: postgres:13
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/code/static
+    ports:
+      - "81:81"
+    depends_on:
+      - web
+
 
 volumes:
   postgres_data:
+  static_volume:

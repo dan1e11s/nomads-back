@@ -112,17 +112,14 @@ class CarRentalRequest(models.Model):
     )
 
     # Контактные данные
-    name = models.CharField(_('Имя'), max_length=100)
-    type_auto = models.ForeignKey(CarType, verbose_name=_('Тип авто'), on_delete=models.CASCADE)
-    brand = models.ForeignKey(Brand, verbose_name=_('Марка автомобиля'), on_delete=models.CASCADE)
-    seats = models.IntegerField(_('Кол-во пассажиров'))
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, null=True, blank=True)
+    first_name = models.CharField(_('Имя'), max_length=100)
+    last_name = models.CharField(_('Фамилия'), max_length=100)
     email = models.EmailField(_('Электронная почта '), max_length=100)
     phone = models.CharField(_('Номер телефона'), max_length=100)
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=0)
 
     # Информация о путешествии
-    date_start = models.DateField(_('Дата начала'), null=True, blank=True)
-    date_end = models.DateField(_('Дата окончания'), null=True, blank=True)
     comment = models.TextField(_('Комментарии и дополнительная информация'), null=True, blank=True)
 
     def __str__(self):

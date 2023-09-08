@@ -1,4 +1,4 @@
-#!/Users/chyngyz/Programming/NomadLife/env/bin/python3
+#!/home/chyngyz/NomadsLife/env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

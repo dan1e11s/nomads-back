@@ -73,14 +73,10 @@ async def new_site_review(data):
 
 async def send_car_request(data):
     if data:
-        msg = f"Имя: <b>{data['name']}</b> \n" \
-              f"Тип автомобиля: <b>{data['type_auto_name']}</b> \n"\
-              f"Марка автомобиля: <b>{data['brand_name']}</b> \n"\
-              f"Кол-во пассажиров: <b>{data['seats']}</b> \n"\
+        msg = f"Заявка на авто: <b>{data['model']}</b> \n"\
+              f"ФИО: <b>{data['first_name']} {data['last_name']}</b> \n" \
               f"Электронная почта: <b>{data['email']}</b> \n"\
               f"Номер телефона: <b>{data['phone']}</b> \n"\
-              f"Дата начала: <b>{data['date_start']}</b> \n"\
-              f"Дата окончания: <b>{data['date_end']}</b> \n"\
               f"Комментарии и дополнительная информация: <b>{data['comment']}</b> \n"
         await bot.send_message(CHAT_ID, msg)
         return True
@@ -113,7 +109,6 @@ async def your_tour_create(data):
         await bot.send_message(CHAT_ID, msg)
         return True
     return False
-
 
 
 async def tour_request(data):

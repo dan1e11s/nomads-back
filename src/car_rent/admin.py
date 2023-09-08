@@ -41,15 +41,8 @@ class BrandAdmin(admin.ModelAdmin):
 @admin.register(CarRentalRequest)
 class CarRentalRequestAdmin(admin.ModelAdmin):
     model = CarRentalRequest
-    list_display = ('name', 'email', 'phone', 'status',)
-    list_display_links = ('name',)
+    list_display = ('first_name', 'last_name', 'email', 'phone', 'status',)
+    list_display_links = ('first_name', 'last_name')
     list_editable = ('status',)
     list_filter = ('status',)
 
-    fieldsets = (
-        (_("Контактные данные"), {"fields": (
-            'status', 'type_auto', 'brand', 'seats', 'name', 'email', 'phone',)}),
-
-        (_("Информация о путешествии"), {
-         "fields": ('date_start', 'date_end', 'comment')}),
-    )
