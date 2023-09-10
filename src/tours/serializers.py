@@ -89,12 +89,16 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
     avg_rating = serializers.FloatField()
     total_reviews = serializers.IntegerField()
     cat_name = serializers.SerializerMethodField()
+    type_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Tour
-        fields = ['id', 'cat_name', 'title', 'description', 'duration', 'start_day', 'avg_rating', 'total_reviews',
+        fields = ['id', 'cat_name', 'title', 'type', 'type_name', 'description', 'duration', 'start_day', 'avg_rating', 'total_reviews',
                   'img', 'price']
 
+    def get_type_name(self, obj):
+        return dict(Tour.TYPE_CHOICES).get(obj.type)
+    
     def get_start_day(self, obj):
         if obj.start_day:
             return obj.start_day.strftime('%e %B')

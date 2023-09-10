@@ -44,6 +44,19 @@ class ReviewCreateAPIView(generics.CreateAPIView):
         return Response({'response': False, 'errors': serializer.errors})
 
 
+
+class DatesListAPIView(views.APIView):
+    def get(self, request, *args, **kwargs):
+        dates =  last_12_months_choices()
+        data = []
+        for i in dates:
+            for j in i[:1]:
+                data.append({"name": j})
+        
+        return Response(data)
+
+
+
 class GuaranteedToursAPIView(generics.ListAPIView):
     search_fields = ['cat__name', 'images__location', 'prices__economy', 'description',
                      'excluded', 'included', 'start_day', 'title']
@@ -53,7 +66,7 @@ class GuaranteedToursAPIView(generics.ListAPIView):
     pagination_class = GuaranteedToursPagination
 
     def get_queryset(self):
-        tours = Tour.objects.filter(type=1).prefetch_related('prices', 'images', )
+        tours = Tour.objects.prefetch_related('prices', 'images', )
 
         tours = tours.annotate(avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
                                total_reviews=Count('reviews', filter=Q(reviews__status=1)))
