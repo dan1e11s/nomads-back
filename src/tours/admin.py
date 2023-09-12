@@ -62,6 +62,12 @@ class CategoryAdmin(admin.ModelAdmin):
             return mark_safe(f"<img src='{object.img.url}' width='70'>")
 
     get_html_img.short_description = 'Фотография'
+    
+
+@admin.register(Region)
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name',)
+    list_display_links = list_display
 
 
 @admin.register(Slider)

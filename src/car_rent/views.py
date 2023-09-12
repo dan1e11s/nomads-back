@@ -45,7 +45,7 @@ class CarRequestAPIView(generics.CreateAPIView):
             serializer.save()
             msg = run(send_car_request(serializer.data))
             if msg:
-                return Response({'response': True})
+                return Response({'response': True, 'message': 'Заявка успешно отправлено'})
             return Response({'response': False})
         return Response({'response': False, 'errors': serializer.errors})
 

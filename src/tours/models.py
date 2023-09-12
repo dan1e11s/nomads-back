@@ -6,12 +6,23 @@ from django.urls import reverse
 from src.car_rent.models import CarType
 
 
+class Region(models.Model):
+    name = models.CharField(_('Область'), max_length=100)
+    img = models.ImageField(_('CategoriesSerializer'), upload_to='regions', null=True, blank=True)
+    
+    def __str__(self):
+        return self.name 
+    
+    class Meta:
+        verbose_name = _('Область')
+        verbose_name_plural = _('Области')        
+
 
 class Category(models.Model):
     name = models.CharField(_('Название'), max_length=200)
     img = models.ImageField(_('Изображение'), upload_to='cat_images', null=True, blank=True)
-
-    # slug = models.SlugField(_('Слоган'), default='', null=False)
+    region = models.ForeignKey(Region, verbose_name=_("Область"), on_delete=models.CASCADE, null=True, blank=True,
+                               related_name='cats')
 
     class Meta:
         verbose_name = _('Категория')
@@ -23,8 +34,7 @@ class Category(models.Model):
 
 class Program(models.Model):
     description = RichTextField(_('Описание'), null=True, blank=True)
-    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True,
-                             related_name='programs')
+    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True, related_name='programs')
 
     class Meta:
         verbose_name = _('Программа')
@@ -39,12 +49,27 @@ class Program(models.Model):
 
 
 class Prices(models.Model):
-    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True,
-                             related_name='prices')
+    STATUS_CHOICES = (
+        (3, 'Завершено'),
+        (2, 'Распроданно'),
+        (1, 'Доступно')
+    )
+    
+    CURRENCY_CHOICES = (
+        ('USD', 'USD'),
+        ('KGS', 'KGS'),
+        ('RUB', 'RUB'),
+        ('KZT', 'KZT')
+    )
+    
+    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True, related_name='prices')
     person = models.CharField(_('За людей (количество)'), max_length=100, null=True, blank=True)
-    economy = models.CharField(_('Цена эконом'), max_length=100, null=True, blank=True)
-    comfort = models.CharField(_('Цена комфорт'), max_length=100, null=True, blank=True)
-    lux = models.CharField(_('Цена люкс'), max_length=100, null=True, blank=True)
+    price = models.CharField(_('Цена'), max_length=100, null=True, blank=True)
+    currency = models.CharField(_('Валюта'), max_length=5, choices=CURRENCY_CHOICES, default='USD')
+    status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=1)
+    deadline = models.DateField(_('Крайний срок'), null=True, blank=True)
+    start = models.DateField(_('Начало тура'), null=True, blank=True)
+    end = models.DateField(_('Конец тура'), null=True)
 
     def __str__(self):
         return str(self.person) or 'Price'
@@ -55,12 +80,11 @@ class Prices(models.Model):
 
 
 class Route(models.Model):
-    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.SET_NULL, null=True, blank=True,
-                             related_name='routes')
+    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.SET_NULL, null=True, blank=True, related_name='routes')
     day = models.IntegerField(_('День'), null=True, blank=True)
     start = models.CharField(_('Начало (место)'), max_length=50, null=True, blank=True)
     finish = models.CharField(_('Конец (место)'), max_length=50, null=True, blank=True)
-    description = RichTextField(_('Описание'), null=True, blank=True)
+    description = RichTextField(_('Программа'), null=True, blank=True)
     hotel = models.CharField(_('Гостиница'), max_length=100, null=True, blank=True)
     meals = models.CharField(_('Питание'), max_length=100, null=True, blank=True)
 
@@ -73,8 +97,7 @@ class Route(models.Model):
 
 
 class Images(models.Model):
-    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.SET_NULL, null=True, blank=True,
-                             related_name='images')
+    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.SET_NULL, null=True, blank=True, related_name='images')
     location = models.CharField(_('Место изображение'), max_length=100, null=True, blank=True)
     img = models.ImageField(_('Изображение'), upload_to='tour_images', null=True, blank=True)
 
@@ -88,14 +111,6 @@ class TourReviews(models.Model):
         (0, 'Отказано'),
         (2, 'Не проверено'),
     )
-
-    # RATING_CHOICES = (
-    #     (5, _('Отлично')),
-    #     (4, _('Хорошо')),
-    #     (3, _('Неплохо')),
-    #     (2, _('Плохо')),
-    #     (1, _('Ужасно')),
-    # )
 
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=2)
     tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE,
@@ -154,7 +169,6 @@ class Tour(models.Model):
     included = RichTextField(_('Включено'), null=True, blank=True)
     excluded = RichTextField(_('Не включено'), null=True, blank=True)
     top = models.BooleanField(_('Отображения в главной странице'), default=False)
-    start_day = models.DateField(_('Дата началы'), null=True, blank=True)
     views = models.IntegerField(_('Просмотры'), default=0)
 
     class Meta:

@@ -8,6 +8,19 @@ from src.tg_bot.bot import send_tour_review, your_tour_create, tour_request
 from asyncio import run
 
 
+class TourListAPIVIew(generics.ListAPIView):
+    serializer_class = GuaranteedToursSerializer
+
+    pagination_class = GuaranteedToursPagination
+
+    def get_queryset(self):
+        tours = Tour.objects.filter(cat_id=self.kwargs['cat_id']).prefetch_related('prices', 'images', )
+
+        tours = tours.annotate(avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
+                               total_reviews=Count('reviews', filter=Q(reviews__status=1)))
+        return tours.select_related('cat')
+
+
 class TourDetailAPIView(generics.RetrieveAPIView):
     serializer_class = TourDetailSerializer
 
@@ -66,7 +79,7 @@ class GuaranteedToursAPIView(generics.ListAPIView):
     pagination_class = GuaranteedToursPagination
 
     def get_queryset(self):
-        tours = Tour.objects.prefetch_related('prices', 'images', )
+        tours = Tour.objects.filter(type=1).prefetch_related('prices', 'images', )
 
         tours = tours.annotate(avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
                                total_reviews=Count('reviews', filter=Q(reviews__status=1)))
@@ -85,14 +98,14 @@ class SliderAPIView(generics.ListAPIView):
 class MainPageAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         tours = Tour.objects.filter(top=True).prefetch_related('images', 'prices')
-        categories = Category.objects.prefetch_related('tours')
+        regions = Region.objects.prefetch_related('cats')
         
         tours_serializer = MainToursSerializer(tours, many=True)
-        categories_serializer = MainCategoriesSerializer(categories, many=True)
+        regions_serializer = MainRegionSerializer(regions, many=True,  context={'request': self.request})
         
         response_data = {
             "tours": tours_serializer.data,
-            "categories": categories_serializer.data,
+            "regions": regions_serializer.data,
         }
         
         return Response(response_data)

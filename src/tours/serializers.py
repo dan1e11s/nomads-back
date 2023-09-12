@@ -7,7 +7,7 @@ from .models import *
 class PricesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prices
-        fields = ['id', 'person', 'economy', 'comfort', 'lux']
+        fields = ['id', 'person', 'price', 'currency', 'status', 'deadline', 'start', 'end']
 
 
 class ImagesSerializer(serializers.ModelSerializer):
@@ -141,17 +141,34 @@ class MainCatToursSerializer(serializers.ModelSerializer):
         fields = ['id', 'title']
 
 
-class MainCategoriesSerializer(serializers.ModelSerializer):
-    tours = MainCatToursSerializer(many=True)
+class CategoriesSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'img', 'tours']
+        fields = ['id', 'name', 'img']
 
     def get_img(self, obj):
         if obj.img:
-            return f'http://77.232.128.13:8000{obj.img.url}'
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.img.url)
+        return None
+
+
+class MainRegionSerializer(serializers.ModelSerializer):
+    cats = CategoriesSerializer(many=True)
+    img = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Region
+        fields = ['id', 'name', 'img', 'cats']
+
+    def get_img(self, obj):
+        if obj.img:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.img.url)
         return None
 
 

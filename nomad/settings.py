@@ -42,7 +42,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     # 'django.middleware.locale.LocaleMiddleware',
-    "nomad.middleware.LoginRedirectUrl",
+    # "nomad.middleware.LoginRedirectUrl",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -187,5 +187,5 @@ JAZZMIN_SETTINGS = {
         "clients.sitereviews": "fas fa-child",
         "cleints.faq": "fas fa-user",
     },
-    "navigation_expanded": True,
+    "show_ui_builder": True,
 }
