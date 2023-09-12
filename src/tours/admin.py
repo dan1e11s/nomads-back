@@ -7,12 +7,7 @@ admin.site.site_title = _('Nomad Life')
 admin.site.site_header = _('Nomad Life Kyrgyzstan')
 
 
-class ProgramInline(admin.StackedInline):
-    model = Program
-    extra = 0
-
-
-class PricesInline(admin.TabularInline):
+class PricesInline(admin.StackedInline):
     model = Prices
     extra = 0
 
@@ -37,7 +32,7 @@ class TourAdmin(admin.ModelAdmin):
     search_fields = ('title', 'type', 'duration',)
     search_help_text = 'Поиск по всем данным'
     readonly_fields = ('views',)
-    inlines = (ProgramInline, PricesInline, RouteInline, ImagesInline)
+    inlines = (PricesInline, RouteInline, ImagesInline)
 
 
 @admin.register(TourReviews)

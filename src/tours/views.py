@@ -1,6 +1,7 @@
+from datetime import date
 from rest_framework.response import Response
 from rest_framework import generics, status, filters, views
-from django.db.models import Prefetch, Avg, Count, Q, Sum
+from django.db.models import Avg, Count, Q, OuterRef, Subquery, Min, F
 from .models import *
 from .serializers import *
 from .pagination import GuaranteedToursPagination
@@ -25,7 +26,7 @@ class TourDetailAPIView(generics.RetrieveAPIView):
     serializer_class = TourDetailSerializer
 
     def get_queryset(self):
-        queryset = Tour.objects.prefetch_related('images', 'programs', 'prices', 'routes').all()
+        queryset = Tour.objects.prefetch_related('images', 'prices', 'routes').all()
         tours = queryset.annotate(avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
                                   total_reviews=Count('reviews', filter=Q(reviews__status=1)))
 
@@ -79,10 +80,14 @@ class GuaranteedToursAPIView(generics.ListAPIView):
     pagination_class = GuaranteedToursPagination
 
     def get_queryset(self):
-        tours = Tour.objects.filter(type=1).prefetch_related('prices', 'images', )
+        
+        tours = Tour.objects.filter(type=1).prefetch_related('prices', 'images')
 
-        tours = tours.annotate(avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
-                               total_reviews=Count('reviews', filter=Q(reviews__status=1)))
+        tours = tours.annotate(
+            avg_rating=Avg('reviews__rating', filter=Q(reviews__status=1)),
+            total_reviews=Count('reviews', filter=Q(reviews__status=1)),
+        )
+        
         return tours.select_related('cat')
 
 

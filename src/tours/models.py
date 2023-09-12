@@ -32,22 +32,6 @@ class Category(models.Model):
         return self.name
 
 
-class Program(models.Model):
-    description = RichTextField(_('Описание'), null=True, blank=True)
-    tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True, related_name='programs')
-
-    class Meta:
-        verbose_name = _('Программа')
-        verbose_name_plural = _('Программы')
-
-    def __str__(self):
-        return 'Tour'
-
-    def save(self, *args, **kwargs):
-        self.description = self.description.replace('\r\n\r\n', '')
-        super(Program, self).save(*args, **kwargs)
-
-
 class Prices(models.Model):
     STATUS_CHOICES = (
         (3, 'Завершено'),
@@ -63,8 +47,7 @@ class Prices(models.Model):
     )
     
     tour = models.ForeignKey('Tour', verbose_name=_('Тур'), on_delete=models.CASCADE, null=True, blank=True, related_name='prices')
-    person = models.CharField(_('За людей (количество)'), max_length=100, null=True, blank=True)
-    price = models.CharField(_('Цена'), max_length=100, null=True, blank=True)
+    price = models.IntegerField(_('Цена'), null=True, blank=True)
     currency = models.CharField(_('Валюта'), max_length=5, choices=CURRENCY_CHOICES, default='USD')
     status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=1)
     deadline = models.DateField(_('Крайний срок'), null=True, blank=True)
@@ -72,7 +55,7 @@ class Prices(models.Model):
     end = models.DateField(_('Конец тура'), null=True)
 
     def __str__(self):
-        return str(self.person) or 'Price'
+        return str(self.price) or 'Price'
 
     class Meta:
         verbose_name = 'Цена'
