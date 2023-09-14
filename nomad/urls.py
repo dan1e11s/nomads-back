@@ -11,7 +11,7 @@ urlpatterns = [
     path("ckeditor/", include("ckeditor_uploader.urls")),
     path("client/", include("src.clients.urls")),
     path("car/", include("src.car_rent.urls")),
-    path("lead/", include("src.buy.urls")),
+    path("lead/", include("src.lead.urls")),
 ]
 
 if settings.DEBUG:

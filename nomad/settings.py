@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "src.account",
     "src.clients",
     "src.car_rent",
-    "src.buy"
+    "src.lead"
 ]
 
 MIDDLEWARE = [
