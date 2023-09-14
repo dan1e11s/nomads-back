@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from src.tours.models import Prices, Tour
+
 
 class LeadTraveler(models.Model):
     GENDER_CHOICES = (("Мужчина", "Мужчина"), ("Женщина", "Женщина"))
@@ -21,9 +23,11 @@ class LeadTraveler(models.Model):
     # Bank Card Info
     c_name = models.CharField(_("Имя владельца карты"), max_length=255)
     c_number = models.CharField(_("Номер карты"), max_length=12)
-    c_expiry_data = models.DateField(_("Дата истечения срока"))
+    c_expiry_date = models.DateField(_("Дата истечения срока"))
     c_cvv = models.IntegerField(_("CVV"))
     c_country = models.CharField(_("Страна плательщика"), max_length=255)
+    price = models.ForeignKey(Prices, on_delete=models.SET_NULL, null=True, blank=True)
+    tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"

