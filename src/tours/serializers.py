@@ -9,9 +9,47 @@ locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
 
 
 class PricesSerializer(serializers.ModelSerializer):
+    start = serializers.SerializerMethodField()
+    end = serializers.SerializerMethodField()
+    deadline = serializers.SerializerMethodField()
+    s_weekday = serializers.SerializerMethodField()
+    e_weekday = serializers.SerializerMethodField()
+
     class Meta:
         model = Prices
-        fields = ["id", "price", "currency", "status", "deadline", "start", "end"]
+        fields = [
+            "id",
+            "price",
+            "currency",
+            "status",
+            "deadline",
+            "start",
+            "end",
+            "s_weekday",
+            "e_weekday",
+        ]
+
+    def get_s_weekday(self, obj):
+        if obj.start:
+            return obj.start.strftime("%A")
+
+    def get_e_weekday(self, obj):
+        if obj.end:
+            return obj.end.strftime("%A")
+
+    def get_deadline(seld, obj):
+        if obj.deadline:
+            return obj.deadline.strftime("%-d.%m")
+
+    def get_start(self, obj):
+        if obj.start:
+            return obj.start.strftime("%-d %B, %Y").capitalize()
+        return None
+
+    def get_end(self, obj):
+        if obj.end:
+            return obj.end.strftime("%-d %B, %Y").capitalize()
+        return None
 
 
 class ImagesSerializer(serializers.ModelSerializer):
@@ -154,7 +192,16 @@ class SliderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class CreateYourTourCategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "name"]
+
+
 class CreateYourTourSerializer(serializers.ModelSerializer):
+    transport_name = serializers.ReadOnlyField(source="transport.name")
+    cat_name = serializers.ReadOnlyField(source="cat.name")
+
     class Meta:
         model = CreateOwnTour
         fields = "__all__"
@@ -232,29 +279,10 @@ class MainToursSerializer(serializers.ModelSerializer):
 
 
 class TourRequestSerializer(serializers.ModelSerializer):
-    tour_name = serializers.CharField(source="tour.name", read_only=True)
-
-    class Meta:
-        model = TourRequest
-        fields = [
-            "tour",
-            "status",
-            "first_name",
-            "last_name",
-            "email",
-            "phone",
-            "acc",
-            "size",
-            "start",
-            "end",
-            "comment",
-            "tour_name",
-            "acc_name",
-        ]
-
-
-class TourSerializer(serializers.ModelSerializer):
     tour_title = serializers.ReadOnlyField(source="tour.title")
+    p_start = serializers.ReadOnlyField(source="price.start", required=False)
+    p_price = serializers.ReadOnlyField(source="price.price", required=False)
+    p_currency = serializers.ReadOnlyField(source="price.currency", required=False)
 
     class Meta:
         model = TourRequest
@@ -267,4 +295,8 @@ class TourSerializer(serializers.ModelSerializer):
             "phone",
             "tour_title",
             "comment",
+            "price",
+            "p_start",
+            "p_price",
+            "p_currency",
         ]

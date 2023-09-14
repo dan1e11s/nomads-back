@@ -127,13 +127,16 @@ class TourRequest(models.Model):
     email = models.EmailField(_('Адрес электронной почты'), max_length=100, null=True, blank=True)
     phone = models.CharField(_('Телефон'), max_length=100, null=True, blank=True)
     comment = models.TextField(_('Комментарий'))
+    price = models.ForeignKey('Prices', on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(_('Дата запроса'), auto_now_add=True, null=True, blank=True)
+
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
     class Meta:
         verbose_name = _('Запрос на тур')
-        verbose_name_plural = _('Запросы на туры')    
+        verbose_name_plural = _('Запросы')    
             
             
 class Tour(models.Model):
@@ -216,6 +219,8 @@ class CreateOwnTour(models.Model):
         ('Инстаграмм', 'Инстаграмм'),
         ('Телеграмм', 'Телеграмм'),
     )
+
+    cat = models.ForeignKey(Category, on_delete=models.SET_NULL, verbose_name=_('Категория'), null=True, blank=True)
 
     # Контактные данные
     name_tour = models.CharField(_('Название тура'), max_length=255, null=True, blank=True)
