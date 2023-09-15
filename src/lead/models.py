@@ -21,11 +21,11 @@ class LeadTraveler(models.Model):
     city = models.CharField(_("Город"), max_length=255)
 
     # Bank Card Info
-    c_name = models.CharField(_("Имя владельца карты"), max_length=255)
-    c_number = models.CharField(_("Номер карты"), max_length=12)
-    c_expiry_date = models.DateField(_("Дата истечения срока"))
-    c_cvv = models.IntegerField(_("CVV"))
-    c_country = models.CharField(_("Страна плательщика"), max_length=255)
+    # c_name = models.CharField(_("Имя владельца карты"), max_length=255)
+    # c_number = models.CharField(_("Номер карты"), max_length=34)
+    # c_expiry_date = models.DateField(_("Дата истечения срока"))
+    # c_cvv = models.IntegerField(_("CVV"))
+    # c_country = models.CharField(_("Страна плательщика"), max_length=255)
     price = models.ForeignKey(Prices, on_delete=models.SET_NULL, null=True, blank=True)
     tour = models.ForeignKey(Tour, on_delete=models.SET_NULL, null=True, blank=True)
 

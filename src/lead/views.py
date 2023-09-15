@@ -12,8 +12,13 @@ class CreateTravelerAPIView(generics.CreateAPIView):
     serializer_class = LeadTravelerSerializer
 
     def post(self, request, *args, **kwargs):
-        data = request.data
-        msg = run(create_lead(data['travelers'], data))
-        if msg:
-            return super().post(request, *args, **kwargs)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            try:
+                msg = run(create_lead(lead=serializer.data, travelers=serializer.data['travelers']))
+            except KeyError:
+                msg = run(create_lead(lead=serializer))
+            if msg:
+                return Response({"response": True})
         return Response({"response": False}, status=status.HTTP_400_BAD_REQUEST)

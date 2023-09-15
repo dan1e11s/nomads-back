@@ -35,18 +35,18 @@ class LeadTravelerAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (
-            _("Информация о банковской карте"),
-            {
-                "fields": (
-                    "c_name",
-                    "c_number",
-                    "c_expiry_data",
-                    "c_country",
-                    "c_cvv",
-                )
-            },
-        ),
+        # (
+        #     _("Информация о банковской карте"),
+        #     {
+        #         "fields": (
+        #             "c_name",
+        #             "c_number",
+        #             "c_expiry_date",
+        #             "c_country",
+        #             "c_cvv",
+        #         )
+        #     },
+        # ),
     )
 
     list_display = (

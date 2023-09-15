@@ -191,10 +191,12 @@ async def tour_request(data):
     return False
 
 
-async def create_lead(travelers, lead):
-    if lead or travelers:
+async def create_lead(lead, travelers=False):
         msg = (
-            f"<b>Новая покупка!!!</b> \n\n"
+            f"<b>Новая покупка!!!</b> \n"
+            f"Желаемый тур: <b>{lead['tour_name']}</b> \n"
+            f"Желаемый старт: <b>{lead['p_start']}</b> \n"
+            f"Желаемая цена: <b>{lead['p_price']} {lead['p_currency']}</b> \n\n"
             f"Имя: <b>{lead['first_name']}</b> \n"
             f"Фамилия: <b>{lead['last_name']}</b> \n"
             f"Адрес электронной: <b>{lead['email']}</b> \n"
@@ -203,27 +205,27 @@ async def create_lead(travelers, lead):
             f"Пол: <b>{lead['gender']}</b> \n"
             f"Национальность: <b>{lead['nationality']}</b> \n"
             f"Адрес: <b>{lead['address']}</b> \n"
-            f"Город: <b>{lead['city']}</b> \n"
-            f"Имя владельца карты: <b>{lead['c_name']}</b> \n"
-            f"Номер карты: <b>{lead['c_number']}</b> \n"
-            f"Дата истечения срока: <b>{lead['c_expiry_date']}</b> \n"
-            f"CVV: <b>{lead['c_cvv']}</b> \n"
-            f"Страна плательщика: <b>{lead['c_country']}</b> \n\n"
+            f"Город: <b>{lead['city']}</b> \n\n"
+            # f"Имя владельца карты: <b>{lead['c_name']}</b> \n"
+            # f"Номер карты: <b>{lead['c_number']}</b> \n"
+            # f"Дата истечения срока: <b>{lead['c_expiry_date']}</b> \n"
+            # f"CVV: <b>{lead['c_cvv']}</b> \n"
+            # f"Страна плательщика: <b>{lead['c_country']}</b> \n\n"
         )
+        if travelers:
+            for index, traveler in enumerate(travelers, start=1):
+                traveler_msg = (
+                    f"<b>Traveler: {index}</b> \n"
+                    f"Имя: <b>{traveler['first_name']}</b> \n"
+                    f"Фамилия: <b>{traveler['last_name']}</b> \n"
+                    f"Дата рождения: <b>{traveler['dateofborn']}</b> \n"
+                    f"Пол: <b>{traveler['gender']}</b> \n"
+                    f"Национальность: <b>{traveler['nationality']}</b> \n\n"
+                )
+                msg += traveler_msg
 
-        for index, traveler in enumerate(travelers, start=1):
-            traveler_msg = (
-                f"<b>Traveler: {index}</b> \n"
-                f"Имя: <b>{traveler['first_name']}</b> \n"
-                f"Фамилия: <b>{traveler['last_name']}</b> \n"
-                f"Дата рождения: <b>{traveler['dateofborn']}</b> \n"
-                f"Пол: <b>{traveler['gender']}</b> \n"
-                f"Национальность: <b>{traveler['nationality']}</b> \n\n"
-            )
-            msg += traveler_msg
         await bot.send_message(CHAT_ID, msg)
         return True
-    return False
 
 
 if __name__ == "__main__":
