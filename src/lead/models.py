@@ -5,7 +5,7 @@ from src.tours.models import Prices, Tour
 
 
 class LeadTraveler(models.Model):
-    GENDER_CHOICES = (("Мужчина", "Мужчина"), ("Женщина", "Женщина"))
+    GENDER_CHOICES = (("Мужской", "Мужской"), ("Женский", "Женский"))
 
     # Personal Info
     first_name = models.CharField(_("Имя"), max_length=255)

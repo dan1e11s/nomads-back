@@ -21,4 +21,4 @@ class CreateTravelerAPIView(generics.CreateAPIView):
                 msg = run(create_lead(lead=serializer))
             if msg:
                 return Response({"response": True})
-        return Response({"response": False}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

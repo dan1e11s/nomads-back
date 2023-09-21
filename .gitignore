@@ -22,6 +22,10 @@ __pycache__/
 
 !*media/.gitkeep
 media/*
+nginx/*
+.dockerignore
+docker-compose.yml
+Dockerfile
 !src/*/migrations/__init__.py
 src/*/migrations/*
 log/debug.log
