@@ -31,16 +31,16 @@ class RequestsAdmin(admin.ModelAdmin):
     get_full_name.short_description = 'Full name'
 
 
-@admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'status', 'created_at')
-    search_fields = ('name', 'email', 'comment')
-    list_filter = ('status',)
-    list_editable = ('status',)
-    readonly_fields = ('name', 'email', 'phone', 'comment',)
+# @admin.register(Feedback)
+# class FeedbackAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'email', 'status', 'created_at')
+#     search_fields = ('name', 'email', 'comment')
+#     list_filter = ('status',)
+#     list_editable = ('status',)
+#     readonly_fields = ('name', 'email', 'phone', 'comment',)
 
-    def has_add_permission(self, request):
-        return False
+#     def has_add_permission(self, request):
+#         return False
 
 
 @admin.register(SiteReviews)

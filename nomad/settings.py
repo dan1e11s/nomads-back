@@ -14,7 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = bool(os.getenv("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split()
 
 # Application definition
 
@@ -42,8 +42,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    # 'django.middleware.locale.LocaleMiddleware',
-    # "nomad.middleware.LoginRedirectUrl",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -86,6 +84,12 @@ DATABASES = {
         "PORT": os.environ.get("PORT"),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
@@ -147,30 +151,27 @@ CKEDITOR_CONFIGS = {
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
-INTERNAL_IPS = [
-    "172.18.0.3",
-    "127.0.0.1",
-]
+# INTERNAL_IPS = [
+#     "172.18.0.3",
+#     "127.0.0.1",
+# ]
 
 
-def show_toolbar(request):
-    return True
+# def show_toolbar(request):
+#     return True
 
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-}
+# DEBUG_TOOLBAR_CONFIG = {
+#     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+# }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "https://nomadslife.travel"
-]
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split()
 
 CSRF_TRUSTED_ORIGINS = [
     "https://nomadslife.travel",
 ]
+
+CORS_ALLOW_METHODS = ("GET", "OPTIONS", "PATCH", "POST", "PUT", "DELETE")
 
 
 JAZZMIN_SETTINGS = {
@@ -189,3 +190,6 @@ JAZZMIN_SETTINGS = {
     },
     "show_ui_builder": True,
 }
+
+
+USE_DJANGO_JQUERY = True

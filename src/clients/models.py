@@ -111,16 +111,16 @@ class SiteReviews(models.Model):
         return ''
 
     class Meta:
-        verbose_name = 'Впечатления клиента'
-        verbose_name_plural = 'Впечатления наших клиентов'
+        verbose_name = 'Впечатления'
+        verbose_name_plural = 'Впечатления клиентов'
 
     
 class FAQ(models.Model):
     name = models.CharField(_('Категория FAQ'), max_length=255, null=True, blank=True)
     
     class Meta:
-        verbose_name = _('Вопрос и ответ')
-        verbose_name_plural = _('Часто задаваемые вопросы')
+        verbose_name = _('FAQ')
+        verbose_name_plural = _('FAQ')
         
     def __str__(self):
         return self.name

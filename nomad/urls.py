@@ -6,18 +6,16 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from .yasg import urlpatterns as doc_urlpatterns
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("tour/", include("src.tours.urls")),
-    path("ckeditor/", include("ckeditor_uploader.urls")),
-    path("client/", include("src.clients.urls")),
-    path("car/", include("src.car_rent.urls")),
-    path("lead/", include("src.lead.urls")),
+    path("api/admin/", admin.site.urls),
+    path('api/chaining/', include('smart_selects.urls')),
+    path("api/tour/", include("src.tours.urls")),
+    path("api/ckeditor/", include("ckeditor_uploader.urls")),
+    path("api/client/", include("src.clients.urls")),
+    path("api/car/", include("src.car_rent.urls")),
+    path("api/lead/", include("src.lead.urls")),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns = [path("__debug__/", include("debug_toolbar.urls"))] + urlpatterns
-
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += doc_urlpatterns

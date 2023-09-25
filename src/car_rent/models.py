@@ -126,5 +126,5 @@ class CarRentalRequest(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('Заявка на аренду автомобиля')
-        verbose_name_plural = _('Заявки на аренду автомобиля')
+        verbose_name = _('Заявка на авто')
+        verbose_name_plural = _('Заявки на авто')

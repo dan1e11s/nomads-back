@@ -49,14 +49,14 @@ class TourReviewsAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'get_html_img',)
+    list_display = ('name', 'region',)
     list_display_links = ('name',)
 
-    def get_html_img(self, object):
-        if object.img:
-            return mark_safe(f"<img src='{object.img.url}' width='70'>")
+    # def get_html_img(self, object):
+    #     if object.img:
+    #         return mark_safe(f"<img src='{object.img.url}' width='70'>")
 
-    get_html_img.short_description = 'Фотография'
+    # get_html_img.short_description = 'Фотография'
     
 
 @admin.register(Region)

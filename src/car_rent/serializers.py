@@ -28,7 +28,7 @@ class CarListSerializer(serializers.ModelSerializer):
     def get_img(self, obj):
         first_img = obj.car_images.all()
         if first_img:
-            return f'http://77.232.128.13:8000{first_img[0].img.url}'
+            return f'https://nomadslife.travel{first_img[0].img.url}'
         return None
 
     def get_price(self, obj):
