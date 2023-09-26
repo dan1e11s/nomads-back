@@ -139,6 +139,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
     type_name = serializers.SerializerMethodField(read_only=True)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     start_day = serializers.DateField(read_only=True, format="%Y, %d %B")
+    currency = serializers.CharField(read_only=True)
 
     class Meta:
         model = Tour
@@ -155,6 +156,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
             "img",
             "price",
             "start_day",
+            "currency"
         ]
 
     def to_representation(self, instance):
@@ -168,6 +170,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
 
         if price:
             representation["price"] = price.price
+            representation["currency"] = price.currency
             representation["start_day"] = price.start.strftime("%Y, %d %B")
 
         return representation
@@ -251,10 +254,11 @@ class MainToursSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     start_day = serializers.DateField(read_only=True, format="%d %B")
+    currency = serializers.CharField(read_only=True)
 
     class Meta:
         model = Tour
-        fields = ["id", "title", "price", "start_day", "img"]
+        fields = ["id", "title", "price", "start_day", "img", "currency"]
 
     def to_representation(self, instance):
         today = date.today()
@@ -267,6 +271,7 @@ class MainToursSerializer(serializers.ModelSerializer):
 
         if price:
             representation["price"] = price.price
+            representation["currency"] = price.currency
             representation["start_day"] = price.start.strftime("%Y, %d %B")
 
         return representation

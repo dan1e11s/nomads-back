@@ -61,7 +61,7 @@ async def send_request(data):
             if not data["tour_name"]:
                 budget = data["budget"].split("-")
                 msg = (
-                    f"<b>Новая заявка!!!</b> \n\n"
+                    f"<b>Новый запрос!!!</b> \n\n"
                     f"Имя: <b>{data['first_name']}</b> \n"
                     f"Фамилия: <b>{data['last_name']}</b> \n"
                     f"Почта: <b>{data['email']}</b> \n"
@@ -133,6 +133,7 @@ async def your_tour_create(data):
     if data:
         try:
             msg = (
+                f"Конструктор поездок\n"
                 f"Название тура: <b>{data['name_tour']}</b> \n"
                 f"Категория тура: <b>{data['cat_name']}</b> \n"
                 f"Жилье: <b>{data['accommodation']}</b> \n"
@@ -146,6 +147,7 @@ async def your_tour_create(data):
             )
         except KeyError:
             msg = (
+                f"Конструктор поездок\n\n"
                 f"Название тура: <b>{data['name_tour']}</b> \n"
                 f"Жилье: <b>{data['accommodation']}</b> \n"
                 f"Питание: <b>{data['meat']}</b> \n"
