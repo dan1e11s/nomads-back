@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "src.account",
     "src.clients",
     "src.car_rent",
-    "src.lead"
+    "src.lead",
 ]
 
 MIDDLEWARE = [
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "nomad.urls"
@@ -75,15 +75,15 @@ AUTH_USER_MODEL = "account.User"
 
 
 DATABASES = {
-     "default": {
-         "ENGINE": "django.db.backends.postgresql_psycopg2",
-         "NAME": os.environ.get("DATABASE"),
-         "USER": os.environ.get("USER"),
-         "PASSWORD": os.environ.get("PASSWORD"),
-         "HOST": os.environ.get("HOST"),
-         "PORT": os.environ.get("PORT"),
-     }
- }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("DATABASE"),
+        "USER": os.environ.get("USER"),
+        "PASSWORD": os.environ.get("PASSWORD"),
+        "HOST": os.environ.get("HOST"),
+        "PORT": os.environ.get("PORT"),
+    }
+}
 
 
 # Password validation
@@ -118,9 +118,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "/static/"
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/django_static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
@@ -131,33 +130,12 @@ MEDIA_URL = "/media/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 10,
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ]
 }
 
-CKEDITOR_CONFIGS = {
-    "default": {
-        "height": 200,
-        "width": "full",
-    },
-}
-
-CKEDITOR_UPLOAD_PATH = "uploads/"
-
-
-# INTERNAL_IPS = [
-#     "172.18.0.3",
-#     "127.0.0.1",
-# ]
-
-
-# def show_toolbar(request):
-#     return True
-
-
-# DEBUG_TOOLBAR_CONFIG = {
-#     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-# }
 
 CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split()
 
@@ -187,3 +165,22 @@ JAZZMIN_SETTINGS = {
 
 
 USE_DJANGO_JQUERY = True
+
+CKEDITOR_CONFIGS = {
+    "default": {
+        "height": 200,
+        "width": "full",
+    },
+}
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
+# Django debug toolbar
+def show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+}
