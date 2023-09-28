@@ -11,6 +11,7 @@ dist
 db.sqlite3
 sqlite.db
 venv
+env/
 .env
 static/
 staticfiles/
