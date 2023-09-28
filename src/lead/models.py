@@ -17,8 +17,8 @@ class LeadTraveler(models.Model):
     nationality = models.CharField(_("Национальность"), max_length=255)
 
     # Address
-    address = models.CharField(_("Адрес"), max_length=255)
-    city = models.CharField(_("Город"), max_length=255)
+    # address = models.CharField(_("Адрес"), max_length=255)
+    # city = models.CharField(_("Город"), max_length=255)
 
     # Bank Card Info
     # c_name = models.CharField(_("Имя владельца карты"), max_length=255)

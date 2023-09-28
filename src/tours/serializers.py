@@ -243,7 +243,7 @@ class MainToursSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ["id", "title", "price", "start_day", "img", "currency"]
+        fields = ["id", "title", "price", "start_day", "img", "currency", "duration"]
 
     def to_representation(self, instance):
         today = date.today()
@@ -258,6 +258,7 @@ class MainToursSerializer(serializers.ModelSerializer):
             representation["price"] = price.price
             representation["currency"] = price.currency
             representation["start_day"] = price.start.strftime("%Y, %d %B")
+            representation["status"] = price.status
 
         return representation
 

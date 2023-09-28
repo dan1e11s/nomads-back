@@ -12,7 +12,7 @@ from .models import (
     Meals,
     Transport,
     Categories,
-    ArticleImages
+    ArticleImages,
 )
 from src.tours.models import Tour
 
@@ -187,6 +187,7 @@ class ArticleCatsMainSerializer(serializers.ModelSerializer):
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
     art_images = ArticleImagesSerializer(many=True)
+    created_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Articles
@@ -197,8 +198,13 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
             "full_desc",
             "poster",
             "link",
+            "views",
+            "created_at",
             "art_images",
         ]
+
+    def get_created_at(self, obj):
+        return obj.created_at.strftime("%d %B %Yг.")
 
 
 class RightbarToursSerializer(serializers.ModelSerializer):

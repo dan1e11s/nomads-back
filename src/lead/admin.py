@@ -26,16 +26,16 @@ class LeadTravelerAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        (
-            _("Адрес"),
-            {
-                "fields": (
-                    "address",
-                    "city",
-                )
-            },
-        ),
         # (
+        #     _("Адрес"),
+        #     {
+        #         "fields": (
+        #             "address",
+        #             "city",
+        #         )
+        #     },
+        # ),
+        # # (
         #     _("Информация о банковской карте"),
         #     {
         #         "fields": (

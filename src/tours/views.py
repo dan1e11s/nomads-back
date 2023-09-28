@@ -1,14 +1,12 @@
 from datetime import date
 from rest_framework.response import Response
-from rest_framework import generics, status, filters, views
-from django.db.models import Avg, Count, Q, OuterRef, Subquery, Min, F
+from rest_framework import generics, filters, views
+from django.db.models import Avg, Count, Q
 from .models import *
 from .serializers import *
 from .pagination import GuaranteedToursPagination
 from src.tg_bot.bot import send_tour_review, tour_request
 from asyncio import run
-from src.car_rent.models import CarType
-from src.car_rent.serializers import TypeSerializer
 
 
 class TourListAPIVIew(generics.ListAPIView):
@@ -118,17 +116,17 @@ class MainPageAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         tours = Tour.objects.filter(top=True).prefetch_related("images", "prices")
         regions = Region.objects.prefetch_related("cats")
-        r_tours = Tour.objects.filter(type=2).prefetch_related("images", "prices").order_by("-id")[:4]
+        upcoming_tours = Tour.objects.filter(type=2).prefetch_related("images", "prices").order_by("-id")[:4]
 
         tours_serializer = MainToursSerializer(tours, many=True)
         regions_serializer = MainRegionSerializer(
             regions, many=True, context={"request": self.request}
         )
-        r_tours_serializer = MainToursSerializer(r_tours, many=True)
+        upcoming_tours_serializer = MainToursSerializer(upcoming_tours, many=True)
 
         response_data = {
             "tours": tours_serializer.data,
-            "r_tours": r_tours_serializer.data,
+            "upcoming_tour": upcoming_tours_serializer.data,
             "regions": regions_serializer.data,
         }
 

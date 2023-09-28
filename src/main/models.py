@@ -226,7 +226,7 @@ class CreateOwnTour(models.Model):
     status = models.IntegerField(_("Статус"), choices=STATUS_CHOICES, default=1)
 
     # Информация о путешествии
-    cats = models.TextField(_("Предпочтительные туры"), null=True, blank=True)
+    cats = models.TextField(_("Предпочтительные категории"), null=True, blank=True)
     accommodation = models.CharField(_("Размещение"), max_length=255)
     transport = models.CharField(_("Транспорт"), max_length=255)
     meal = models.CharField(_("Питание"), max_length=255)

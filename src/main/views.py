@@ -139,6 +139,10 @@ class ArticleDetailView(APIView):
     def get(self, request, id):
         try:
             queryset = Articles.objects.get(id=id)
+            
+            queryset.views += 1
+            queryset.save()
+            
             serializer = ArticleDetailSerializer(queryset, context={"request": request})
 
             return Response(serializer.data)
