@@ -195,21 +195,6 @@ class SliderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CreateYourTourCategoriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ["id", "name"]
-
-
-class CreateYourTourSerializer(serializers.ModelSerializer):
-    transport_name = serializers.ReadOnlyField(source="transport.name")
-    cat_name = serializers.ReadOnlyField(source="cat.name")
-
-    class Meta:
-        model = CreateOwnTour
-        fields = "__all__"
-
-
 # Main Page Data
 
 

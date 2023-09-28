@@ -5,7 +5,7 @@ from django.db.models import Avg, Count, Q, OuterRef, Subquery, Min, F
 from .models import *
 from .serializers import *
 from .pagination import GuaranteedToursPagination
-from src.tg_bot.bot import send_tour_review, your_tour_create, tour_request
+from src.tg_bot.bot import send_tour_review, tour_request
 from asyncio import run
 from src.car_rent.models import CarType
 from src.car_rent.serializers import TypeSerializer
@@ -118,56 +118,21 @@ class MainPageAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         tours = Tour.objects.filter(top=True).prefetch_related("images", "prices")
         regions = Region.objects.prefetch_related("cats")
+        r_tours = Tour.objects.filter(type=2).prefetch_related("images", "prices").order_by("-id")[:4]
 
         tours_serializer = MainToursSerializer(tours, many=True)
         regions_serializer = MainRegionSerializer(
             regions, many=True, context={"request": self.request}
         )
+        r_tours_serializer = MainToursSerializer(r_tours, many=True)
 
         response_data = {
             "tours": tours_serializer.data,
+            "r_tours": r_tours_serializer.data,
             "regions": regions_serializer.data,
         }
 
         return Response(response_data)
-
-
-class CreateYourTourAPIView(generics.CreateAPIView):
-    serializer_class = CreateYourTourSerializer
-    queryset = CreateOwnTour.objects.all()
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            msg = run(your_tour_create(serializer.data))
-            if msg:
-                return Response({"response": True})
-            return Response({"response": False})
-        return Response({"response": False, "errors": serializer.errors})
-
-    def get(self, request, *args, **kwargs):
-        cat = Category.objects.all()
-        transport = CarType.objects.all()
-        data = {
-            "accommodation_choices": [
-                {"name": label} for key, label in CreateOwnTour.ACCOMMODATION_CHOICES
-            ],
-            "meat_choices": [
-                {"name": label} for key, label in CreateOwnTour.MEAT_CHOICES
-            ],
-            "people_choices": [
-                {"name": str(label)} for key, label in CreateOwnTour.PEOPLE_CHOICES
-            ],
-            "method_choices": [
-                {"name": label} for key, label in CreateOwnTour.METHOD_CHOICES
-            ],
-            "cat": CreateYourTourCategoriesSerializer(cat, many=True).data,
-            "transport": TypeSerializer(transport, many=True).data
-        }
-
-        return Response(data)
 
 
 class TourRequestAPIView(generics.CreateAPIView):

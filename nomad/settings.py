@@ -34,9 +34,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "src.tours",
     "src.account",
-    "src.clients",
     "src.car_rent",
     "src.lead",
+    "src.main",
 ]
 
 MIDDLEWARE = [
@@ -48,7 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "nomad.urls"
@@ -163,6 +163,7 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": True,
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 USE_DJANGO_JQUERY = True
 

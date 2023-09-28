@@ -45,4 +45,30 @@ class CarRentalRequestAdmin(admin.ModelAdmin):
     list_display_links = ('first_name', 'last_name')
     list_editable = ('status',)
     list_filter = ('status',)
+    
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "phone",
+                    "email",
+                    "status",
+                )
+            },
+        ),
+        (
+            _("Информация о путешествии"),
+            {
+                "fields": (
+                    "car",
+                    "comment",
+                    "datefrom",
+                    "dateto",
+                )
+            },
+        ),
+    )
 

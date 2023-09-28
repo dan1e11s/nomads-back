@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ckeditor.fields import RichTextField
@@ -60,10 +61,8 @@ class Car(models.Model):
     )
 
     STATUS_CHOICES = (
-        # (0, _('Вне службы')),
         (1, _('Доступно')),
         (0, _('Не доступно')),
-        # (3, _('В ремонте')),
     )
     
     CONDITIONER_CHOICES = (
@@ -99,6 +98,16 @@ class Car(models.Model):
 
     def __str__(self):
         return self.model
+    
+    def unavailable_dates(self):
+        unavailable_dates = []
+        rental_requests = CarRentalRequest.objects.filter(car=self, status=2)
+        
+        for request in rental_requests:
+            date_range = [request.datefrom + timedelta(days=x) for x in range((request.dateto - request.datefrom).days + 1)]
+            unavailable_dates.extend(date_range)
+        
+        return unavailable_dates
 
     class Meta:
         verbose_name = _('Авто')
@@ -107,23 +116,27 @@ class Car(models.Model):
 
 class CarRentalRequest(models.Model):
     STATUS_CHOICES = (
-        (1, _('Обслужено')),
-        (0, _('Не обслужено')),
+        (1, _('Новая заявка')),
+        (0, _('Отклонено')),
+        (2, _('Куплено')),
+        (3, _('Завершено'))
     )
 
     # Контактные данные
-    car = models.ForeignKey(Car, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField(_('Имя'), max_length=100)
     last_name = models.CharField(_('Фамилия'), max_length=100)
     email = models.EmailField(_('Электронная почта '), max_length=100)
     phone = models.CharField(_('Номер телефона'), max_length=100)
-    status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField(_('Статус'), choices=STATUS_CHOICES, default=1)
 
     # Информация о путешествии
-    comment = models.TextField(_('Комментарии и дополнительная информация'), null=True, blank=True)
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, verbose_name="Авто")
+    comment = models.TextField(_("Комментарии и дополнительная информация"), null=True, blank=True)
+    datefrom = models.DateField(_("Дата начала"))
+    dateto = models.DateField(_("Дата окончания"))
 
     def __str__(self):
-        return self.name
+        return f"{self.first_name} {self.last_name}"
 
     class Meta:
         verbose_name = _('Заявка на авто')

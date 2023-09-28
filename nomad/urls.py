@@ -10,7 +10,7 @@ urlpatterns = [
     path('api/chaining/', include('smart_selects.urls')),
     path("api/tour/", include("src.tours.urls")),
     path("api/ckeditor/", include("ckeditor_uploader.urls")),
-    path("api/client/", include("src.clients.urls")),
+    path("api/", include("src.main.urls")),
     path("api/car/", include("src.car_rent.urls")),
     path("api/lead/", include("src.lead.urls")),
     path("__debug__/", include("debug_toolbar.urls")),

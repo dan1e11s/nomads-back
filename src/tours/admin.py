@@ -78,14 +78,6 @@ class SliderAdmin(admin.ModelAdmin):
     get_html_img.short_description = 'Изображение'
 
 
-@admin.register(CreateOwnTour)
-class CreateOwnTourAdmin(admin.ModelAdmin):
-    list_display = ('name_tour', 'method', 'date_start',)
-    list_display_links = ('name_tour',)
-    search_fields = ('name_tour', 'method', 'date_start', 'comment',)
-    list_filter = ('name_tour',)
-
-
 @admin.register(TourRequest)
 class TourRequestAdmin(admin.ModelAdmin):
     model = TourRequest

@@ -105,6 +105,8 @@ async def send_car_request(data):
     if data:
         msg = (
             f"Заявка на авто: <b>{data['model']}</b> \n"
+            f"Дата начала: <b>{data['datefrom']}</b> \n"
+            f"Дата окончания: <b>{data['dateto']}</b> \n"
             f"ФИО: <b>{data['first_name']} {data['last_name']}</b> \n"
             f"Электронная почта: <b>{data['email']}</b> \n"
             f"Номер телефона: <b>{data['phone']}</b> \n"
@@ -129,33 +131,41 @@ async def send_tour_review(data):
     return False
 
 
-async def your_tour_create(data):
+async def create_own_tour(data, cats):
     if data:
+        if data['gid']:
+            gid = 'Да'
+        else:   
+            gid = 'Нет'
         try:
             msg = (
                 f"Конструктор поездок\n"
-                f"Название тура: <b>{data['name_tour']}</b> \n"
-                f"Категория тура: <b>{data['cat_name']}</b> \n"
+                f"ФИО: <b>{data['full_name']}</b> \n"
+                f"Email: <b>{data['email']}</b> \n"
+                f"phone: <b>{data['phone']}</b> \n"
+                f"Категории: <b>{cats}</b> \n"
                 f"Жилье: <b>{data['accommodation']}</b> \n"
-                f"Питание: <b>{data['meat']}</b> \n"
+                f"Транспорт: <b>{data['transport']}</b> \n"
+                f"Питание: <b>{data['meal']}</b> \n"
                 f"Кол-во людей: <b>{data['people']}</b> \n"
-                f"Способы связи: <b>{data['method']}</b> \n"
-                f"Транспорт: <b>{data['transport_name']}</b> \n"
-                f"Дата начала: <b>{await format_date(data['date_start'])}</b> \n"
-                f"Дата окончания: <b>{await format_date(data['date_end'])}</b> \n"
+                f"Дата начала: <b>{await format_date(data['datefrom'])}</b> \n"
+                f"Дата окончания: <b>{await format_date(data['dateto'])}</b> \n"
+                f"Нужен ли ГИД: <b>{gid}</b> \n"
                 f"Комментарии и дополнительная информация: <b>{data['comment']}</b> \n"
             )
         except KeyError:
             msg = (
-                f"Конструктор поездок\n\n"
-                f"Название тура: <b>{data['name_tour']}</b> \n"
+                f"Конструктор поездок\n"
+                f"ФИО: <b>{data['full_name']}</b> \n"
+                f"Email: <b>{data['email']}</b> \n"
+                f"phone: <b>{data['phone']}</b> \n"
+                f"Категории: <b>{cats}</b> \n"
                 f"Жилье: <b>{data['accommodation']}</b> \n"
-                f"Питание: <b>{data['meat']}</b> \n"
+                f"Транспорт: <b>{data['transport']}</b> \n"
+                f"Питание: <b>{data['meal']}</b> \n"
                 f"Кол-во людей: <b>{data['people']}</b> \n"
-                f"Способы связи: <b>{data['method']}</b> \n"
-                f"Транспорт: <b>{data['transport_name']}</b> \n"
-                f"Дата начала: <b>{await format_date(data['date_start'])}</b> \n"
-                f"Дата окончания: <b>{await format_date(data['date_end'])}</b> \n"
+                f"Дата начала: <b>{await format_date(data['datefrom'])}</b> \n"
+                f"Дата окончания: <b>{await format_date(data['dateto'])}</b> \n"
                 f"Комментарии и дополнительная информация: <b>{data['comment']}</b> \n"
             )
         await bot.send_message(CHAT_ID, msg)

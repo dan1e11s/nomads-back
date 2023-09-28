@@ -14,7 +14,7 @@ class LeadTraveler(models.Model):
     phone = models.CharField(_("Телефон"), max_length=255)
     dateofborn = models.DateField(_("Дата рождения"))
     gender = models.CharField(_("Гендер"), max_length=10, choices=GENDER_CHOICES)
-    nationality = models.CharField(_("Страна"), max_length=255)
+    nationality = models.CharField(_("Национальность"), max_length=255)
 
     # Address
     address = models.CharField(_("Адрес"), max_length=255)
