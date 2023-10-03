@@ -7,23 +7,9 @@ from src.car_rent.models import CarType
 from smart_selects.db_fields import GroupedForeignKey
 
 
-class Region(models.Model):
-    name = models.CharField(_("Область"), max_length=100)
-    img = models.ImageField(_("Изображение"), upload_to="regions", null=True, blank=True)
-    
-    def __str__(self):
-        return self.name 
-    
-    class Meta:
-        verbose_name = _("Область")
-        verbose_name_plural = _("Области")        
-
-
 class Category(models.Model):
     name = models.CharField(_("Название"), max_length=200)
     img = models.ImageField(_("Изображение"), upload_to="cat_images", null=True, blank=True)
-    region = models.ForeignKey(Region, verbose_name=_("Область"), on_delete=models.CASCADE, null=True, blank=True,
-                               related_name="cats")
 
     class Meta:
         verbose_name = _("Категория")
@@ -152,7 +138,7 @@ class Tour(models.Model):
     )
 
     title = models.CharField(_("Заголовок"), max_length=200, null=True, blank=True)
-    cat = GroupedForeignKey(Category, "region", verbose_name=_("Категория"), on_delete=models.CASCADE, null=True, blank=True,
+    cat = models.ForeignKey(Category, verbose_name=_("Категория"), on_delete=models.CASCADE, null=True, blank=True,
                             related_name="tours")
     type = models.IntegerField(_("Тип тура"), choices=TYPE_CHOICES, null=True, blank=True)
     duration = models.IntegerField(_("Продолжительность (день)"), null=True, blank=True)
@@ -161,6 +147,7 @@ class Tour(models.Model):
     excluded = RichTextField(_("Не включено"), null=True, blank=True)
     top = models.BooleanField(_("Отображения в главной странице"), default=False)
     views = models.IntegerField(_("Просмотры"), default=0)
+    youtube_link = models.URLField(_("Ссылка на ютуб"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Тур")

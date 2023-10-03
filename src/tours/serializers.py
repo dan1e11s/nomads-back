@@ -89,6 +89,7 @@ class TourDetailSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
     avg_rating = serializers.DecimalField(max_digits=3, decimal_places=1)
     total_reviews = serializers.IntegerField()
+    is_youtube_link = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
@@ -104,6 +105,8 @@ class TourDetailSerializer(serializers.ModelSerializer):
             "included",
             "excluded",
             "views",
+            "youtube_link",
+            "is_youtube_link",
             "images",
             "prices",
             "included",
@@ -111,6 +114,11 @@ class TourDetailSerializer(serializers.ModelSerializer):
             "routes",
             "reviews",
         ]
+
+    def get_is_youtube_link(self, obj):
+        if obj.youtube_link:
+            return True
+        return False
 
     def get_type_name(self, obj):
         return dict(Tour.TYPE_CHOICES).get(obj.type)
@@ -120,6 +128,11 @@ class TourDetailSerializer(serializers.ModelSerializer):
         reviews = instance.reviews.filter(status=1).values(
             "id", "date", "rating", "name", "comment", "date_created"
         )
+
+        if data["youtube_link"]:
+            youtube_link = data["youtube_link"]
+            data["images"].append({"youtube_link": youtube_link})
+            data.pop("youtube_link")
 
         for review in reviews:
             date_created = review["date_created"]
@@ -156,7 +169,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
             "img",
             "price",
             "start_day",
-            "currency"
+            "currency",
         ]
 
     def to_representation(self, instance):
@@ -206,26 +219,11 @@ class MainCatToursSerializer(serializers.ModelSerializer):
 
 class CategoriesSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
+    tours = MainCatToursSerializer(many=True)
 
     class Meta:
         model = Category
-        fields = ["id", "name", "img"]
-
-    def get_img(self, obj):
-        if obj.img:
-            request = self.context.get("request")
-            if request:
-                return request.build_absolute_uri(obj.img.url)
-        return None
-
-
-class MainRegionSerializer(serializers.ModelSerializer):
-    cats = CategoriesSerializer(many=True)
-    img = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Region
-        fields = ["id", "name", "img", "cats"]
+        fields = ["id", "name", "img", "tours"]
 
     def get_img(self, obj):
         if obj.img:
@@ -267,6 +265,33 @@ class MainToursSerializer(serializers.ModelSerializer):
         if first_img:
             return f"https://nomadslife.travel{first_img[0].img.url}"
         return None
+
+
+class UpcomingToursSerializer(serializers.ModelSerializer):
+    price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    start_day = serializers.DateField(read_only=True, format="%d %B")
+    currency = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Tour
+        fields = ["id", "title", "price", "start_day", "currency", "duration"]
+
+    def to_representation(self, instance):
+        today = date.today()
+
+        price = (
+            instance.prices.filter(status=1, start__gte=today).order_by("start").first()
+        )
+
+        representation = super().to_representation(instance)
+
+        if price:
+            representation["price"] = price.price
+            representation["currency"] = price.currency
+            representation["start_day"] = price.start.strftime("%d %b")
+            representation["status"] = price.status
+
+        return representation
 
 
 class TourRequestSerializer(serializers.ModelSerializer):

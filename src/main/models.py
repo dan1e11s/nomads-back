@@ -67,8 +67,7 @@ class Requests(models.Model):
         blank=True,
     )
     status = models.IntegerField(_("Статус"), choices=STATUS_CHOICES, default=0)
-    first_name = models.CharField(_("Имя"), max_length=100)
-    last_name = models.CharField(_("Фамилия"), max_length=100)
+    full_name = models.CharField(_("Имя"), max_length=100)
     email = models.EmailField(_("Адрес электронной почты"), max_length=100)
     phone = models.CharField(_("Телефон"), max_length=100)
     size = models.IntegerField(_("Размер группы"))
@@ -273,7 +272,7 @@ class Articles(models.Model):
     short_desc = models.TextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
     poster = models.ImageField(_("Постер"), upload_to="article_posters")
-    link = models.URLField(_("Ссылка"))
+    link = models.URLField(_("Ссылка"), null=True, blank=True)
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
     views = models.IntegerField(_("Просмотры"), default=1)
     

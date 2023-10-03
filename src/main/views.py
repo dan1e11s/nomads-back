@@ -95,10 +95,11 @@ class CreateYourTourAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         cats = ", ".join(request.data.get("cats", []))
+        accommodation = ", ".join(request.data.get("accommodation", []))
 
         if serializer.is_valid():
             serializer.save()
-            msg = run(create_own_tour(serializer.data, cats))
+            msg = run(create_own_tour(serializer.data, cats, accommodation))
             if msg:
                 return Response({"response": True})
             return Response({"response": False})
@@ -139,12 +140,21 @@ class ArticleDetailView(APIView):
     def get(self, request, id):
         try:
             queryset = Articles.objects.get(id=id)
+            serializer = ArticleDetailSerializer(queryset, context={"request": request})
+            
+            rightbar_queryset = ArticleCats.objects.all()
+            rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
+
+            tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
+            tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
             
             queryset.views += 1
             queryset.save()
-            
-            serializer = ArticleDetailSerializer(queryset, context={"request": request})
 
-            return Response(serializer.data)
+            return Response({
+                "detial": serializer.data,
+                "categories": rightbar_serializer.data,
+                "tours": tours_serializer.data
+            })
         except ObjectDoesNotExist:
             return Response({"response": False}, status=status.HTTP_404_NOT_FOUND)

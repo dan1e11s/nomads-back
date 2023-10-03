@@ -13,7 +13,7 @@ class InformationInline(admin.StackedInline):
 @admin.register(Requests)
 class RequestsAdmin(admin.ModelAdmin):
     model = Requests
-    list_display = ("get_full_name", "status", "contact", "newsletter", "created_at")
+    list_display = ("full_name", "status", "contact", "newsletter", "created_at")
     search_fields = (
         "first_name",
         "last_name",
@@ -30,28 +30,6 @@ class RequestsAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
-
-    def get_full_name(self, object):
-        if not object.first_name:
-            return mark_safe(object.last_name)
-        elif not object.last_name:
-            return mark_safe(object.first_name)
-        else:
-            return mark_safe(f"{object.first_name} {object.last_name}")
-
-    get_full_name.short_description = "Full name"
-
-
-# @admin.register(Feedback)
-# class FeedbackAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'email', 'status', 'created_at')
-#     search_fields = ('name', 'email', 'comment')
-#     list_filter = ('status',)
-#     list_editable = ('status',)
-#     readonly_fields = ('name', 'email', 'phone', 'comment',)
-
-#     def has_add_permission(self, request):
-#         return False
 
 
 @admin.register(SiteReviews)

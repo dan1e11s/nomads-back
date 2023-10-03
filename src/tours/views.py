@@ -115,22 +115,26 @@ class SliderAPIView(generics.ListAPIView):
 class MainPageAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         tours = Tour.objects.filter(top=True).prefetch_related("images", "prices")
-        regions = Region.objects.prefetch_related("cats")
-        upcoming_tours = Tour.objects.filter(type=2).prefetch_related("images", "prices").order_by("-id")[:4]
+        upcoming_tours = (
+            Tour.objects.filter(type=2)
+            .prefetch_related("images", "prices")
+            .order_by("-id")[:4]
+        )
 
         tours_serializer = MainToursSerializer(tours, many=True)
-        regions_serializer = MainRegionSerializer(
-            regions, many=True, context={"request": self.request}
-        )
-        upcoming_tours_serializer = MainToursSerializer(upcoming_tours, many=True)
+        upcoming_tours_serializer = UpcomingToursSerializer(upcoming_tours, many=True)
 
         response_data = {
             "tours": tours_serializer.data,
             "upcoming_tour": upcoming_tours_serializer.data,
-            "regions": regions_serializer.data,
         }
 
         return Response(response_data)
+
+
+class CategoriesAPIView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoriesSerializer
 
 
 class TourRequestAPIView(generics.CreateAPIView):

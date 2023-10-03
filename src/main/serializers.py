@@ -24,8 +24,7 @@ class SendCreateRequestSerializer(serializers.ModelSerializer):
         model = Requests
         fields = [
             "tour_name",
-            "first_name",
-            "last_name",
+            "full_name",
             "email",
             "phone",
             "size",
@@ -98,6 +97,9 @@ class CreateYourTourSerializer(serializers.ModelSerializer):
     cats = serializers.ListField(
         child=serializers.CharField(), write_only=True, required=False
     )
+    accommodation = serializers.ListField(
+        child=serializers.CharField(), write_only=True, required=False
+    )
 
     class Meta:
         model = CreateOwnTour
@@ -118,13 +120,18 @@ class CreateYourTourSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         cats_list = data.pop("cats", [])
+        accommodation_list = data.pop("accommodation", [])
         instance = super().to_internal_value(data)
 
         formatted_cats = ", \n".join(
             [f"{i + 1} - {cat}" for i, cat in enumerate(cats_list)]
         )
+        formatted_accommodation = ", \n".join(
+            [f"{i + 1} - {accommodation}" for i, accommodation in enumerate(accommodation_list)]
+        )
 
         instance["cats"] = formatted_cats
+        instance["accommodation"] = formatted_accommodation
         return instance
 
 
