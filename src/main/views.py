@@ -108,7 +108,7 @@ class CreateYourTourAPIView(generics.CreateAPIView):
 
 class ArticleNavView(APIView):
     def get(self, request):
-        queryset = ArticleCats.objects.all()
+        queryset = ArticleCats.objects.all().prefetch_related("articles")
         serializer = ArticleNavSerializer(queryset, many=True)
 
         return Response(serializer.data)
@@ -121,7 +121,7 @@ class ArticleListView(APIView):
             articles_queryset, many=True, context={"request": request}
         )
 
-        rightbar_queryset = ArticleCats.objects.all()
+        rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
         rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
 
         tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
@@ -142,7 +142,7 @@ class ArticleDetailView(APIView):
             queryset = Articles.objects.get(id=id)
             serializer = ArticleDetailSerializer(queryset, context={"request": request})
             
-            rightbar_queryset = ArticleCats.objects.all()
+            rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
             rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
 
             tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
@@ -152,9 +152,25 @@ class ArticleDetailView(APIView):
             queryset.save()
 
             return Response({
-                "detial": serializer.data,
+                "detail": [serializer.data],
                 "categories": rightbar_serializer.data,
                 "tours": tours_serializer.data
             })
         except ObjectDoesNotExist:
             return Response({"response": False}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ArticlesListAPIView(APIView):
+    def get(self, request):
+        rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
+        rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
+
+        tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
+        tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
+        
+        return Response(
+            {
+                "categories": rightbar_serializer.data,
+                "tours": tours_serializer.data
+            }
+        )

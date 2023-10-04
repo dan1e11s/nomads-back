@@ -3,7 +3,7 @@ from datetime import datetime
 from aiogram import Bot, Dispatcher, types, executor
 
 TOKEN = os.getenv("TOKEN")
-CHAT_ID = -1001849790564
+CHAT_ID = os.getenv("CHAT_ID")
 
 bot = Bot(token=TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)

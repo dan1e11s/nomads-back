@@ -5,8 +5,6 @@ from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from .models import *
 
-locale.setlocale(locale.LC_TIME, "ru_RU.UTF-8")
-
 
 class PricesSerializer(serializers.ModelSerializer):
     start = serializers.SerializerMethodField()
@@ -176,7 +174,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
         today = date.today()
 
         price = (
-            instance.prices.filter(status=1, start__gte=today).order_by("start").first()
+            instance.prices.filter(status=1).order_by("start").first()
         )
 
         representation = super().to_representation(instance)
@@ -247,7 +245,7 @@ class MainToursSerializer(serializers.ModelSerializer):
         today = date.today()
 
         price = (
-            instance.prices.filter(status=1, start__gte=today).order_by("start").first()
+            instance.prices.filter(status=1).order_by("start").first()
         )
 
         representation = super().to_representation(instance)
@@ -280,7 +278,7 @@ class UpcomingToursSerializer(serializers.ModelSerializer):
         today = date.today()
 
         price = (
-            instance.prices.filter(status=1, start__gte=today).order_by("start").first()
+            instance.prices.filter(status=1).order_by("start").first()
         )
 
         representation = super().to_representation(instance)

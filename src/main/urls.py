@@ -1,5 +1,16 @@
 from django.urls import path
-from .views import *
+from .views import (
+    SendCreateRequestAPIView,
+    SiteReviewsCreateAPIView,
+    SiteReviewsListAPIView,
+    FAQAPIView,
+    CreateOwnTourRecView,
+    CreateYourTourAPIView,
+    ArticleNavView,
+    ArticleListView,
+    ArticleDetailView,
+    ArticlesListAPIView
+)
 
 
 urlpatterns = [
@@ -12,4 +23,5 @@ urlpatterns = [
     path('article/nav', ArticleNavView.as_view(), name='article-cats'),
     path('article/list/<int:cat_id>', ArticleListView.as_view(), name='article-nav-list'),
     path('article/detail/<int:id>', ArticleDetailView.as_view(), name='article-detail'),
+    path("main/articles", ArticlesListAPIView.as_view(), name="articles"),
 ]
