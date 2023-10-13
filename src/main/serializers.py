@@ -13,6 +13,8 @@ from .models import (
     Transport,
     Categories,
     ArticleImages,
+    Gallery,
+    GalleryImages,
 )
 from src.tours.models import Tour
 
@@ -127,7 +129,10 @@ class CreateYourTourSerializer(serializers.ModelSerializer):
             [f"{i + 1} - {cat}" for i, cat in enumerate(cats_list)]
         )
         formatted_accommodation = ", \n".join(
-            [f"{i + 1} - {accommodation}" for i, accommodation in enumerate(accommodation_list)]
+            [
+                f"{i + 1} - {accommodation}"
+                for i, accommodation in enumerate(accommodation_list)
+            ]
         )
 
         instance["cats"] = formatted_cats
@@ -218,3 +223,30 @@ class RightbarToursSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ["id", "title"]
+
+
+class GalleryImagesSerializer(serializers.ModelSerializer):
+    img = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = GalleryImages
+        fields = "__all__"
+
+    def get_img(self, obj):
+        if obj.img:
+            return f"https://nomadslife.travel{obj.img.url}"
+        return None
+
+
+class GalleryFilterSerializer(serializers.ModelSerializer):
+    gallery_images = GalleryImagesSerializer(many=True)
+
+    class Meta:
+        model = Gallery
+        fields = ["id", "name", "gallery_images"]
+
+
+class GalleryListAPIViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gallery
+        fields = ["id", "name"]

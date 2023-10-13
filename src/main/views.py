@@ -15,6 +15,9 @@ from .serializers import (
     ArticleDetailSerializer,
     ArticleCatsMainSerializer,
     RightbarToursSerializer,
+    GalleryListAPIViewSerializer,
+    GalleryFilterSerializer,
+    GalleryImagesSerializer
 )
 from .models import (
     Articles,
@@ -24,6 +27,8 @@ from .models import (
     SiteReviews,
     CreateOwnTourRec,
     FAQ,
+    Gallery,
+    GalleryImages,
 )
 
 from src.tours.models import Tour
@@ -141,21 +146,25 @@ class ArticleDetailView(APIView):
         try:
             queryset = Articles.objects.get(id=id)
             serializer = ArticleDetailSerializer(queryset, context={"request": request})
-            
+
             rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
-            rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
+            rightbar_serializer = ArticleCatsMainSerializer(
+                rightbar_queryset, many=True
+            )
 
             tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
             tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
-            
+
             queryset.views += 1
             queryset.save()
 
-            return Response({
-                "detail": [serializer.data],
-                "categories": rightbar_serializer.data,
-                "tours": tours_serializer.data
-            })
+            return Response(
+                {
+                    "detail": [serializer.data],
+                    "categories": rightbar_serializer.data,
+                    "tours": tours_serializer.data,
+                }
+            )
         except ObjectDoesNotExist:
             return Response({"response": False}, status=status.HTTP_404_NOT_FOUND)
 
@@ -167,10 +176,20 @@ class ArticlesListAPIView(APIView):
 
         tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
         tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
-        
+
         return Response(
-            {
-                "categories": rightbar_serializer.data,
-                "tours": tours_serializer.data
-            }
+            {"categories": rightbar_serializer.data, "tours": tours_serializer.data}
         )
+
+
+class GalleryListView(generics.ListAPIView):
+    queryset = Gallery.objects.all()
+    serializer_class = GalleryListAPIViewSerializer
+
+
+class GalleryFilterView(APIView):
+    def get(self, request, gallery_id):
+        queryset = Gallery.objects.get(id=gallery_id)
+        serializer = GalleryFilterSerializer(queryset)
+
+        return Response(serializer.data)

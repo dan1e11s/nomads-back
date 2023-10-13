@@ -283,3 +283,27 @@ class Articles(models.Model):
         verbose_name = _("Статья")
         verbose_name_plural = _("Статьи")
         
+        
+class Gallery(models.Model):
+    name = models.CharField(_("Название"), max_length=255)
+    
+    def __str__(self) -> str:
+        return self.name
+    
+    class Meta:
+        verbose_name = _("Галерея")
+        verbose_name_plural = _("Галерея")
+        
+
+class GalleryImages(models.Model):
+    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, related_name="gallery_images")
+    name = models.CharField(_("Название"), max_length=255)
+    img = models.ImageField(_("Изображение"), upload_to="gallery")
+    created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
+    
+    def __str__(self) -> str:
+        return self.name 
+    
+    class Meta:
+        verbose_name = _("Галерея")
+        verbose_name_plural = _("Галерея")

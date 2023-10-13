@@ -149,3 +149,15 @@ class ArticlesAdmin(admin.ModelAdmin):
             return mark_safe(f"<img src='{object.poster.url}' height='60'>")
 
     get_html_poster.short_description = 'Постер'
+
+
+class GalleryImagesInline(admin.StackedInline):
+    model = GalleryImages
+    extra = 0
+
+
+@admin.register(Gallery)
+class GalleryAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+    list_display_links = list_display
+    inlines = (GalleryImagesInline,)
