@@ -26,6 +26,6 @@ urlpatterns = [
     path("article/list/<int:cat_id>", ArticleListView.as_view(), name="article-nav-list"),
     path("article/detail/<int:id>", ArticleDetailView.as_view(), name="article-detail"),
     path("main/articles", ArticlesListAPIView.as_view(), name="articles"),
-    path("gallery/list", GalleryListView.as_view(), name="gallery-list"),
+    path("<str:lang_code>/gallery/list", GalleryListView.as_view(), name="gallery-list"),
     path("gallery/list/<int:gallery_id>", GalleryFilterView.as_view(), name="gallery-list-id"),
 ]
