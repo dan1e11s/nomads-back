@@ -1,8 +1,6 @@
 from django.contrib import admin
-from django.http.request import HttpRequest
 from django.utils.safestring import mark_safe
 from .models import *
-from django.contrib.auth.admin import UserAdmin
 
 
 class InformationInline(admin.StackedInline):

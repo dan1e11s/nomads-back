@@ -285,6 +285,12 @@ class Articles(models.Model):
         
         
 class Gallery(models.Model):
+    LANG_COICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_COICES, default="ru")
     name = models.CharField(_("Название"), max_length=255)
     
     def __str__(self) -> str:

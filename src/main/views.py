@@ -182,9 +182,12 @@ class ArticlesListAPIView(APIView):
         )
 
 
-class GalleryListView(generics.ListAPIView):
-    queryset = Gallery.objects.all()
-    serializer_class = GalleryListAPIViewSerializer
+class GalleryListView(APIView):
+    def get(self, request):
+        queryset = Gallery.objects.all()
+        serializer = GalleryListAPIViewSerializer(queryset, many=True)
+        
+        return Response(serializer.data)
 
 
 class GalleryFilterView(APIView):
