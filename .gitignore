@@ -3,7 +3,8 @@ idea
 .DS_Store
 .env.dev
 data/
-
+backup_data.sql
+backup_file.dump
 *.egg-info/
 .installed.cfg
 *.egg
