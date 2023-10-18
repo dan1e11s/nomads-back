@@ -8,6 +8,16 @@ from smart_selects.db_fields import GroupedForeignKey
 
 
 class Category(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=200)
     img = models.ImageField(_("Изображение"), upload_to="cat_images", null=True, blank=True)
 
@@ -131,18 +141,29 @@ class TourRequest(models.Model):
             
             
 class Tour(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
     TYPE_CHOICES = (
         (1, "Гарантированный"),
         (2, "По заявке"),
         (3, "Предложить свой тур"),
     )
 
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
     title = models.CharField(_("Заголовок"), max_length=200, null=True, blank=True)
     cat = models.ForeignKey(Category, verbose_name=_("Категория"), on_delete=models.CASCADE, null=True, blank=True,
                             related_name="tours")
     type = models.IntegerField(_("Тип тура"), choices=TYPE_CHOICES, null=True, blank=True)
     duration = models.IntegerField(_("Продолжительность (день)"), null=True, blank=True)
-    description = RichTextField(_("Описание"), null=True, blank=True)
+    price_for = models.IntegerField(_("Цены указаны за"), null=True, blank=True)
+    description = RichTextField(_("Полное описание"), null=True, blank=True)
+    short_desc = RichTextField(_("Краткое описание"), blank=True, default="")
     included = RichTextField(_("Включено"), null=True, blank=True)
     excluded = RichTextField(_("Не включено"), null=True, blank=True)
     top = models.BooleanField(_("Отображения в главной странице"), default=False)
@@ -167,6 +188,16 @@ class Tour(models.Model):
 
 
 class Slider(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
     title = models.CharField(_("Заголовок"), max_length=255, null=True, blank=True)
     subtitle = models.CharField(_("Подзаголовок"), max_length=255, null=True, blank=True)
     img = models.ImageField(_("Изображение"), upload_to="slider", null=True, blank=True)

@@ -98,7 +98,7 @@ class CreateOwnTourRecAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         existing_objects_count = self.model.objects.count()
 
-        if existing_objects_count > 0:
+        if existing_objects_count <= 6:
             return False
         return True
 
@@ -138,8 +138,10 @@ class ArticleImagesInline(admin.StackedInline):
 
 @admin.register(Articles)
 class ArticlesAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "created_at", "views", "get_html_poster",)
+    list_display = ("id", "title", "cat", "created_at", "views", "get_html_poster",)
     list_display_links = ("id", "title",)
+    list_filter = ("cat",)
+    search_fields = ("title", "")
     inlines = (ArticleImagesInline,)
     
     def get_html_poster(self, object):

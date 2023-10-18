@@ -14,10 +14,10 @@ from .serializers import (
     ArticleCats,
     ArticleDetailSerializer,
     ArticleCatsMainSerializer,
-    RightbarToursSerializer,
+    RightbarCategorySerializer,
     GalleryListAPIViewSerializer,
     GalleryFilterSerializer,
-    GalleryImagesSerializer
+    GalleryImagesSerializer,
 )
 from .models import (
     Articles,
@@ -31,7 +31,7 @@ from .models import (
     GalleryImages,
 )
 
-from src.tours.models import Tour
+from src.tours.models import Tour, Category
 from src.tg_bot.bot import send_request, new_site_review, create_own_tour
 from src.base.pagination import ReviewsListPagination
 from asyncio import run
@@ -83,15 +83,20 @@ class FAQAPIView(generics.ListAPIView):
     queryset = FAQ.objects.prefetch_related("faq")
     search_fields = ["name", "faq__question"]
     filter_backends = [SearchFilter]
+    
+    def get_queryset(self):
+        return FAQ.objects.filter(lang=self.kwargs["lang_code"]).prefetch_related("faq")
 
 
 class CreateOwnTourRecView(APIView):
-    def get(self, request):
-        queryset = CreateOwnTourRec.objects.get(pk=1)
-        serializer = CreateOwnTourRecSerializer(queryset)
+    def get(self, request, lang_code):
+        try:
+            queryset = CreateOwnTourRec.objects.get(lang=lang_code)
+            serializer = CreateOwnTourRecSerializer(queryset)
 
-        return Response(serializer.data)
-
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response({"detail": "Страница не найдена"}, status=status.HTTP_404_NOT_FOUND)
 
 class CreateYourTourAPIView(generics.CreateAPIView):
     serializer_class = CreateYourTourSerializer
@@ -112,8 +117,8 @@ class CreateYourTourAPIView(generics.CreateAPIView):
 
 
 class ArticleNavView(APIView):
-    def get(self, request):
-        queryset = ArticleCats.objects.all().prefetch_related("articles")
+    def get(self, request, lang_code):
+        queryset = ArticleCats.objects.filter(lang=lang_code).prefetch_related("articles")
         serializer = ArticleNavSerializer(queryset, many=True)
 
         return Response(serializer.data)
@@ -126,19 +131,7 @@ class ArticleListView(APIView):
             articles_queryset, many=True, context={"request": request}
         )
 
-        rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
-        rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
-
-        tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
-        tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
-
-        return Response(
-            {
-                "articles": articles_serializer.data,
-                "categories": rightbar_serializer.data,
-                "tours": tours_serializer.data,
-            }
-        )
+        return Response(articles_serializer.data)
 
 
 class ArticleDetailView(APIView):
@@ -147,38 +140,23 @@ class ArticleDetailView(APIView):
             queryset = Articles.objects.get(id=id)
             serializer = ArticleDetailSerializer(queryset, context={"request": request})
 
-            rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
-            rightbar_serializer = ArticleCatsMainSerializer(
-                rightbar_queryset, many=True
-            )
-
-            tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
-            tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
-
             queryset.views += 1
             queryset.save()
 
-            return Response(
-                {
-                    "detail": [serializer.data],
-                    "categories": rightbar_serializer.data,
-                    "tours": tours_serializer.data,
-                }
-            )
+            return Response(serializer.data)
         except ObjectDoesNotExist:
             return Response({"response": False}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ArticlesListAPIView(APIView):
-    def get(self, request):
-        rightbar_queryset = ArticleCats.objects.all().prefetch_related("articles")
+    def get(self, request, lang_code):
+        rightbar_queryset = ArticleCats.objects.filter(lang=lang_code).prefetch_related(
+            "articles"
+        )
         rightbar_serializer = ArticleCatsMainSerializer(rightbar_queryset, many=True)
 
-        tours_queryset = Tour.objects.filter(type=1).order_by("-id")[:5]
-        tours_serializer = RightbarToursSerializer(tours_queryset, many=True)
-
         return Response(
-            {"categories": rightbar_serializer.data, "tours": tours_serializer.data}
+            {"categories": rightbar_serializer.data}
         )
 
 
@@ -186,13 +164,18 @@ class GalleryListView(APIView):
     def get(self, request, lang_code):
         queryset = Gallery.objects.filter(lang=lang_code)
         serializer = GalleryListAPIViewSerializer(queryset, many=True)
-        
+
         return Response(serializer.data)
 
 
 class GalleryFilterView(APIView):
     def get(self, request, gallery_id):
-        queryset = Gallery.objects.get(id=gallery_id)
-        serializer = GalleryFilterSerializer(queryset)
+        try:
+            queryset = Gallery.objects.get(id=gallery_id)
+            serializer = GalleryFilterSerializer(queryset)
 
-        return Response(serializer.data)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response(
+                {"detial": "Страница не найдена."}, status=status.HTTP_404_NOT_FOUND
+            )

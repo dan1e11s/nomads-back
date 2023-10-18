@@ -24,7 +24,9 @@ class CarListAPIView(views.APIView):
 
 class CarTypeListView(generics.ListAPIView):
     serializer_class = CarTypeSerializer
-    queryset = CarType.objects.all()
+    
+    def get_queryset(self):
+        return CarType.objects.filter(lang=self.kwargs["lang_code"])
         
 
 

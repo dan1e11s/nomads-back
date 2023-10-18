@@ -17,7 +17,7 @@ class RouteInline(admin.StackedInline):
     extra = 0
 
 
-class ImagesInline(admin.TabularInline):
+class ImagesInline(admin.StackedInline):
     model = Images
     extra = 0
 

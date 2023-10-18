@@ -120,6 +120,16 @@ class SiteReviews(models.Model):
 
 
 class FAQ(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Категория FAQ"), max_length=255, null=True, blank=True)
 
     class Meta:
@@ -203,8 +213,19 @@ class Categories(models.Model):
 
 
 class CreateOwnTourRec(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", unique=2)
+
     def __str__(self) -> str:
-        return "Настройки создания тура"
+        return f"Настройки создания тура ({self.lang})"
 
     class Meta:
         verbose_name = _("Настройки создания тура")
@@ -244,6 +265,16 @@ class CreateOwnTour(models.Model):
 
 
 class ArticleCats(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=255)
     
     def __str__(self) -> str:
@@ -267,11 +298,21 @@ class ArticleImages(models.Model):
 
 
 class Articles(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     cat = models.ForeignKey(ArticleCats, verbose_name="Категория", on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(_("Заголовок"), max_length=255)
     short_desc = models.TextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
-    poster = models.ImageField(_("Постер"), upload_to="article_posters")
+    poster = models.ImageField(_("Постер"), upload_to="article_posters", null=True, blank=True)
     link = models.URLField(_("Ссылка"), null=True, blank=True)
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
     views = models.IntegerField(_("Просмотры"), default=1)
@@ -285,16 +326,25 @@ class Articles(models.Model):
         
         
 class Gallery(models.Model):
-    LANG_COICES = (
+    LANG_CHOICES = (
         ("ru", "Русский"),
         ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
     )
     
-    lang = models.CharField(_("Язык"), choices=LANG_COICES, default="ru")
-    name = models.CharField(_("Название"), max_length=255)
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
+    name = models.CharField(_("Название"), max_length=255, null=True, blank=True)
+    youtube_link = models.URLField(_("Ссылка на ютуб"), null=True, blank=True)
+    # poster = models.ImageField(_(""), upload_to='test', default='default_profile_photo.png')
+    # video = models.FileField(_("Видео"), upload_to="videos", null=True, blank=True)
     
     def __str__(self) -> str:
-        return self.name
+        if self.name:
+            return self.name
+        return ""
     
     class Meta:
         verbose_name = _("Галерея")
@@ -303,12 +353,14 @@ class Gallery(models.Model):
 
 class GalleryImages(models.Model):
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, related_name="gallery_images")
-    name = models.CharField(_("Название"), max_length=255)
+    name = models.CharField(_("Описание"), max_length=255, null=True, blank=True)
     img = models.ImageField(_("Изображение"), upload_to="gallery")
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
     
     def __str__(self) -> str:
-        return self.name 
+        if self.name:
+            return self.name
+        return ""
     
     class Meta:
         verbose_name = _("Галерея")

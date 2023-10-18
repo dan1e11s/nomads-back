@@ -97,8 +97,10 @@ class TourDetailSerializer(serializers.ModelSerializer):
             "total_reviews",
             "title",
             "type",
+            "price_for",
             "type_name",
             "duration",
+            "short_desc",
             "description",
             "included",
             "excluded",
@@ -160,7 +162,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
             "title",
             "type",
             "type_name",
-            "description",
+            "short_desc",
             "duration",
             "avg_rating",
             "total_reviews",
@@ -173,9 +175,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         today = date.today()
 
-        price = (
-            instance.prices.filter(status=1).order_by("start").first()
-        )
+        price = instance.prices.filter(status=1).order_by("start").first()
 
         representation = super().to_representation(instance)
 
@@ -244,9 +244,7 @@ class MainToursSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         today = date.today()
 
-        price = (
-            instance.prices.filter(status=1).order_by("start").first()
-        )
+        price = instance.prices.filter(status=1).order_by("start").first()
 
         representation = super().to_representation(instance)
 
@@ -277,9 +275,7 @@ class UpcomingToursSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         today = date.today()
 
-        price = (
-            instance.prices.filter(status=1).order_by("start").first()
-        )
+        price = instance.prices.filter(status=1).order_by("start").first()
 
         representation = super().to_representation(instance)
 
@@ -313,4 +309,22 @@ class TourRequestSerializer(serializers.ModelSerializer):
             "p_start",
             "p_price",
             "p_currency",
+        ]
+
+
+class ToursViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tour
+        fields = ["id", "title"]
+
+
+class CategoriesViewSerializer(serializers.ModelSerializer):
+    tours = ToursViewSerializer(many=True)
+    
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "tours",
         ]

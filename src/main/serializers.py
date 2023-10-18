@@ -16,7 +16,7 @@ from .models import (
     Gallery,
     GalleryImages,
 )
-from src.tours.models import Tour
+from src.tours.models import Tour, Category
 
 
 class SendCreateRequestSerializer(serializers.ModelSerializer):
@@ -219,18 +219,18 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         return obj.created_at.strftime("%d %B %Yг.")
 
 
-class RightbarToursSerializer(serializers.ModelSerializer):
+class RightbarCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tour
-        fields = ["id", "title"]
+        model = Category
+        fields = ["id", "name"]
 
 
 class GalleryImagesSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = GalleryImages
-        fields = "__all__"
+        fields = ["id", "name", "img", "created_at"]
 
     def get_img(self, obj):
         if obj.img:
@@ -247,6 +247,14 @@ class GalleryFilterSerializer(serializers.ModelSerializer):
 
 
 class GalleryListAPIViewSerializer(serializers.ModelSerializer):
+    poster = serializers.SerializerMethodField()
+
     class Meta:
         model = Gallery
-        fields = ["id", "name"]
+        fields = ["id", "name", "youtube_link", "poster"]
+        
+    def get_poster(self, obj):
+        images = obj.gallery_images.all()
+        if images:
+            return f"https://nomadslife.travel{images[0].img.url}"
+        return None

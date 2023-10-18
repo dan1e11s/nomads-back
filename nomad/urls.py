@@ -8,10 +8,10 @@ from .yasg import urlpatterns as doc_urlpatterns
 urlpatterns = [
     path("api/admin/", admin.site.urls),
     path('api/chaining/', include('smart_selects.urls')),
-    path("api/tour/", include("src.tours.urls")),
+    path("api/", include("src.tours.urls")),
     path("api/ckeditor/", include("ckeditor_uploader.urls")),
     path("api/", include("src.main.urls")),
-    path("api/car/", include("src.car_rent.urls")),
+    path("api/", include("src.car_rent.urls")),
     path("api/lead/", include("src.lead.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]

@@ -93,7 +93,7 @@ class GuaranteedToursAPIView(generics.ListAPIView):
     pagination_class = GuaranteedToursPagination
 
     def get_queryset(self):
-        tours = Tour.objects.filter(type=1).prefetch_related("prices", "images")
+        tours = Tour.objects.filter(type=1, lang=self.kwargs["lang_code"]).prefetch_related("prices", "images")
 
         tours = tours.annotate(
             avg_rating=Avg("reviews__rating", filter=Q(reviews__status=1)),
@@ -107,16 +107,16 @@ class SliderAPIView(generics.ListAPIView):
     serializer_class = SliderSerializer
 
     def get_queryset(self):
-        queryset = Slider.objects.filter(is_active=True)
+        queryset = Slider.objects.filter(is_active=True, lang=self.kwargs["lang_code"])
         sorted_queryset = sorted(queryset, key=lambda obj: obj.id)
         return sorted_queryset
 
 
 class MainPageAPIView(views.APIView):
-    def get(self, request, *args, **kwargs):
-        tours = Tour.objects.filter(top=True).prefetch_related("images", "prices")
+    def get(self, request, lang_code, *args, **kwargs):
+        tours = Tour.objects.filter(top=True, lang=lang_code).prefetch_related("images", "prices")
         upcoming_tours = (
-            Tour.objects.filter(type=2)
+            Tour.objects.filter(type=2, lang=lang_code)
             .prefetch_related("images", "prices")
             .order_by("-id")[:4]
         )
@@ -133,9 +133,10 @@ class MainPageAPIView(views.APIView):
 
 
 class CategoriesAPIView(generics.ListAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategoriesSerializer
 
+    def get_queryset(self):
+        return Category.objects.filter(lang=self.kwargs["lang_code"])
 
 class TourRequestAPIView(generics.CreateAPIView):
     serializer_class = TourRequestSerializer
@@ -151,3 +152,10 @@ class TourRequestAPIView(generics.CreateAPIView):
                 return Response({"response": True})
             return Response({"response": False})
         return Response({"response": False, "errors": serializer.errors})
+
+
+class ToursView(generics.ListAPIView):
+    serializer_class = CategoriesViewSerializer
+    
+    def get_queryset(self):
+        return Category.objects.filter(lang=self.kwargs["lang_code"])

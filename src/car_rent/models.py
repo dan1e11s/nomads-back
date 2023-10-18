@@ -5,6 +5,16 @@ from ckeditor.fields import RichTextField
 
 
 class CarType(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
     name = models.CharField(_('Название'), max_length=255)
 
     def __str__(self):
@@ -52,6 +62,16 @@ class Prices(models.Model):
 
 
 class Car(models.Model):
+    LANG_CHOICES = (
+        ("ru", "Русский"),
+        ("en", "Английский"),
+        ("de", "Немецкий"),
+        ("fr", "Французкий"),
+        ("es", "Испанский"),
+        ("jp", "Японский"),
+    )
+    
+    lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
     RATING_CHOICES = (
         (1, 1),
         (2, 2),
