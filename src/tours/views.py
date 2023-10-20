@@ -80,7 +80,6 @@ class GuaranteedToursAPIView(generics.ListAPIView):
     search_fields = [
         "cat__name",
         "images__location",
-        "prices__economy",
         "description",
         "excluded",
         "included",

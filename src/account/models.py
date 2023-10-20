@@ -11,3 +11,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     objects = UserManager()
+
+
+class SendMail(models.Model):
+    
