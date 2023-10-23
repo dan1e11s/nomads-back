@@ -109,10 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGES = [
-    ("en", _("English")), 
-    ("ru", _("Russian"))
-]
+LANGUAGES = [("en", _("English")), ("ru", _("Russian"))]
 
 LANGUAGE_CODE = "en"
 
@@ -122,9 +119,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOCALE_PATH = [
-    os.path.join(BASE_DIR, "locale")
-]
+LOCALE_PATH = [os.path.join(BASE_DIR, "locale")]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -197,3 +192,12 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
     "INTERCEPT_REDIRECTS": False,
 }
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.yandex.ru"
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")

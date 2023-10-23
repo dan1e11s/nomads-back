@@ -1,7 +1,9 @@
+from typing import Any
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin, Group
+from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
-from .models import User
+from .models import User, SendMail
 
 admin.site.unregister(Group)
 
@@ -26,3 +28,10 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ("is_staff", "is_superuser", "is_active", "groups",)
     search_fields = ("username", "first_name", "last_name", "email",)
     ordering = ("username",)
+
+
+@admin.register(SendMail)
+class SendMailAdmin(admin.ModelAdmin):
+    list_display = ("id", "to")
+    list_display = ("id", "to")
+    
