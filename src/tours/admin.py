@@ -42,6 +42,7 @@ class TourAdmin(admin.ModelAdmin):
         "type",
         "cat",
         "duration",
+        "lang",
     )
     search_fields = (
         "title",
@@ -86,6 +87,7 @@ class CategoryAdmin(admin.ModelAdmin):
         "name",
     )
     list_display_links = list_display
+    list_filter = ("lang",)
 
     # def get_html_img(self, object):
     #     if object.img:
@@ -98,11 +100,13 @@ class CategoryAdmin(admin.ModelAdmin):
 class SliderAdmin(admin.ModelAdmin):
     list_display = (
         "title",
+        "lang",
         "is_active",
         "get_html_img",
     )
     list_display_links = ("title",)
     list_editable = ("is_active",)
+    list_filter = ("lang",)
 
     def get_html_img(self, object):
         if object.img:

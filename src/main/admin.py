@@ -129,6 +129,7 @@ class CreateOwnTourAdmin(admin.ModelAdmin):
 class ArticleCatsAdmin(admin.ModelAdmin):
     list_display = ("name",)
     list_display_links = ("name",)
+    list_filter = ("lang",)
 
 
 class ArticleImagesInline(admin.StackedInline):
@@ -140,7 +141,7 @@ class ArticleImagesInline(admin.StackedInline):
 class ArticlesAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "cat", "created_at", "views", "get_html_poster",)
     list_display_links = ("id", "title",)
-    list_filter = ("cat",)
+    list_filter = ("cat", "lang",)
     search_fields = ("title", "")
     inlines = (ArticleImagesInline,)
     
