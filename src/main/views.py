@@ -125,8 +125,8 @@ class ArticleNavView(APIView):
 
 
 class ArticleListView(APIView):
-    def get(self, request, cat_id):
-        articles_queryset = Articles.objects.filter(cat_id=cat_id)
+    def get(self, request, slug):
+        articles_queryset = Articles.objects.filter(cat__slug=slug)
         articles_serializer = ArticleListSerializer(
             articles_queryset, many=True, context={"request": request}
         )
@@ -135,9 +135,9 @@ class ArticleListView(APIView):
 
 
 class ArticleDetailView(APIView):
-    def get(self, request, id):
+    def get(self, request, slug):
         try:
-            queryset = Articles.objects.get(id=id)
+            queryset = Articles.objects.get(slug=slug)
             serializer = ArticleDetailSerializer(queryset, context={"request": request})
 
             queryset.views += 1

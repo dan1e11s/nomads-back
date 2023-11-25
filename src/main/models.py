@@ -278,14 +278,13 @@ class ArticleCats(models.Model):
     
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=255)
-    slug = models.SlugField(_("Slug"))
+    slug = models.SlugField(_("Slug"), max_length=1000)
     
     def __str__(self) -> str:
         return self.name
 
     # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(unidecode(self.name))
+    #     self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
     #     return super().save(*args, **kwargs)
     
     class Meta:
@@ -318,7 +317,7 @@ class Articles(models.Model):
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     cat = models.ForeignKey(ArticleCats, verbose_name="Категория", on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(_("Заголовок"), max_length=255)
-    slug = models.SlugField(_("Slug"))
+    slug = models.SlugField(_("Slug"), max_length=1000)
     short_desc = RichTextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
     poster = models.ImageField(_("Постер"), upload_to="article_posters", null=True, blank=True)
@@ -330,8 +329,7 @@ class Articles(models.Model):
         return self.title
 
     # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(unidecode(self.title))
+    #     self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
     #     return super().save(*args, **kwargs)
 
     class Meta:

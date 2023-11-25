@@ -96,6 +96,7 @@ class TourDetailSerializer(serializers.ModelSerializer):
             "avg_rating",
             "total_reviews",
             "title",
+            "slug",
             "type",
             "price_for",
             "type_name",
@@ -160,6 +161,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
             "id",
             "cat_name",
             "title",
+            "slug",
             "type",
             "type_name",
             "short_desc",
@@ -212,7 +214,7 @@ class SliderSerializer(serializers.ModelSerializer):
 class MainCatToursSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ["id", "title"]
+        fields = ["id", "title", "slug"]
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -221,7 +223,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "name", "img", "tours"]
+        fields = ["id", "name", "img", "tours", "slug"]
 
     def get_img(self, obj):
         if obj.img:
@@ -239,7 +241,7 @@ class MainToursSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ["id", "title", "price", "start_day", "img", "currency", "duration"]
+        fields = ["id", "title", "slug", "price", "start_day", "img", "currency", "duration"]
 
     def to_representation(self, instance):
         today = date.today()
@@ -270,7 +272,7 @@ class UpcomingToursSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tour
-        fields = ["id", "title", "price", "start_day", "currency", "duration"]
+        fields = ["id", "title", "slug", "price", "start_day", "currency", "duration"]
 
     def to_representation(self, instance):
         today = date.today()
@@ -315,7 +317,7 @@ class TourRequestSerializer(serializers.ModelSerializer):
 class ToursViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ["id", "title"]
+        fields = ["id", "title", "slug"]
 
 
 class CategoriesViewSerializer(serializers.ModelSerializer):
@@ -327,4 +329,5 @@ class CategoriesViewSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "tours",
+            "slug",
         ]

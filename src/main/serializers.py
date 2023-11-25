@@ -146,6 +146,7 @@ class ArticleNavSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "slug",
         ]
 
 
@@ -171,6 +172,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "slug",
             "short_desc",
             "full_desc",
             "poster",
@@ -186,7 +188,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 class ArticleMainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Articles
-        fields = ["id", "title"]
+        fields = ["id", "title", "slug"]
 
 
 class ArticleCatsMainSerializer(serializers.ModelSerializer):
@@ -194,7 +196,7 @@ class ArticleCatsMainSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ArticleCats
-        fields = ["id", "name", "articles"]
+        fields = ["id", "name", "slug", "articles"]
 
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
@@ -206,6 +208,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "slug",
             "short_desc",
             "full_desc",
             "poster",

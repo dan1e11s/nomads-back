@@ -3,8 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from .choices import last_12_months_choices
 from ckeditor.fields import RichTextField
 from django.urls import reverse
-from src.car_rent.models import CarType
-from smart_selects.db_fields import GroupedForeignKey
+from django.utils.text import slugify
+from unidecode import unidecode
 
 
 class Category(models.Model):
@@ -19,6 +19,7 @@ class Category(models.Model):
     
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=200)
+    slug = models.SlugField(_("Slug"), max_length=1000)
     img = models.ImageField(_("Изображение"), upload_to="cat_images", null=True, blank=True)
 
     class Meta:
@@ -27,6 +28,13 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
+        return super().save(*args, **kwargs)
+    
+    def test(self):
+        self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
 
 
 class Prices(models.Model):
@@ -157,6 +165,7 @@ class Tour(models.Model):
 
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
     title = models.CharField(_("Заголовок"), max_length=200, null=True, blank=True)
+    slug = models.SlugField(_("Slug"), max_length=1000)
     cat = models.ForeignKey(Category, verbose_name=_("Категория"), on_delete=models.CASCADE, null=True, blank=True,
                             related_name="tours")
     type = models.IntegerField(_("Тип тура"), choices=TYPE_CHOICES, null=True, blank=True)
@@ -184,7 +193,8 @@ class Tour(models.Model):
         self.included = self.included.replace("\r\n\r\n", "")
         self.excluded = self.excluded.replace("\r\n\r\n", "")
         self.description = self.description.replace("\r\n\r\n", "")
-        super(Tour, self).save(*args, **kwargs)
+        self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
+        return super().save(*args, **kwargs)
 
 
 class Slider(models.Model):

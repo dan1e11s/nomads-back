@@ -127,10 +127,11 @@ class CreateOwnTourAdmin(admin.ModelAdmin):
 
 @admin.register(ArticleCats)
 class ArticleCatsAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    list_display_links = ("name",)
+    list_display = ("id", "name",)
+    list_display_links = list_display
     list_filter = ("lang",)
     prepopulated_fields = {"slug": ("name",)}
+    search_fields = ("name", "slug",)
 
 
 class ArticleImagesInline(admin.StackedInline):
@@ -143,7 +144,7 @@ class ArticlesAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "cat", "created_at", "views", "get_html_poster",)
     list_display_links = ("id", "title",)
     list_filter = ("cat", "lang",)
-    search_fields = ("title", "")
+    search_fields = ("title", "slug",)
     inlines = (ArticleImagesInline,)
     prepopulated_fields = {"slug": ("title",)}
     

@@ -2,8 +2,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path("tour/list/<int:cat_id>", TourListAPIVIew.as_view(), name="category-tours-list"),
-    path("tour/detail/<int:pk>", TourDetailAPIView.as_view(), name="tour-detail"),
+    path("tour/list/<str:slug>", TourListAPIVIew.as_view(), name="category-tours-list"),
+    path("tour/detail/<str:slug>", TourDetailAPIView.as_view(), name="tour-detail"),
     path("tour/review-create", ReviewCreateAPIView.as_view(), name="create-review"),
     path("tour/dates", DatesListAPIView.as_view(), name="dates"),
     path("<str:lang_code>/tour/guaranteed", GuaranteedToursAPIView.as_view(), name="guaranteed-tours-list"),

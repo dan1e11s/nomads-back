@@ -11,11 +11,10 @@ from asyncio import run
 
 class TourListAPIVIew(generics.ListAPIView):
     serializer_class = GuaranteedToursSerializer
-
     pagination_class = GuaranteedToursPagination
 
     def get_queryset(self):
-        tours = Tour.objects.filter(cat_id=self.kwargs["cat_id"]).prefetch_related(
+        tours = Tour.objects.filter(cat__slug=self.kwargs["slug"]).prefetch_related(
             "prices",
             "images",
         )
@@ -29,6 +28,7 @@ class TourListAPIVIew(generics.ListAPIView):
 
 class TourDetailAPIView(generics.RetrieveAPIView):
     serializer_class = TourDetailSerializer
+    lookup_field = "slug"
 
     def get_queryset(self):
         queryset = Tour.objects.prefetch_related("images", "prices", "routes").all()
