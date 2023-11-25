@@ -179,9 +179,8 @@ class ArticleListSerializer(serializers.ModelSerializer):
         ]
 
     def get_poster(self, obj):
-        request = self.context.get("request")
-        if obj.poster and hasattr(obj.poster, "url"):
-            return request.build_absolute_uri(obj.poster.url)
+        if obj.poster:
+            return f"https://nomadslife.travel{obj.poster.url}"
         return None
 
 

@@ -278,7 +278,7 @@ class ArticleCats(models.Model):
     
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=255)
-    slug = models.SlugField(_("Slug"), max_length=1000)
+    slug = models.SlugField(_("Slug"), max_length=1000, unique=True)
     
     def __str__(self) -> str:
         return self.name
@@ -317,7 +317,7 @@ class Articles(models.Model):
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     cat = models.ForeignKey(ArticleCats, verbose_name="Категория", on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(_("Заголовок"), max_length=255)
-    slug = models.SlugField(_("Slug"), max_length=1000)
+    slug = models.SlugField(_("Slug"), max_length=1000, unique=True)
     short_desc = RichTextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
     poster = models.ImageField(_("Постер"), upload_to="article_posters", null=True, blank=True)

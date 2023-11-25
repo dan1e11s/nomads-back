@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 from .serializers import (
     SendCreateRequestSerializer,
     SiteReviewSerializer,
@@ -124,14 +125,11 @@ class ArticleNavView(APIView):
         return Response(serializer.data)
 
 
-class ArticleListView(APIView):
-    def get(self, request, slug):
-        articles_queryset = Articles.objects.filter(cat__slug=slug)
-        articles_serializer = ArticleListSerializer(
-            articles_queryset, many=True, context={"request": request}
-        )
+class ArticleListView(generics.ListAPIView):
+    serializer_class = ArticleListSerializer
 
-        return Response(articles_serializer.data)
+    def get_queryset(self):
+        return Articles.objects.filter(cat__slug=self.kwargs["slug"])
 
 
 class ArticleDetailView(APIView):
