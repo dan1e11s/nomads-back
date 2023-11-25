@@ -29,9 +29,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-    def save(self, *args, **kwargs):
-        self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
-        return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
+    #     return super().save(*args, **kwargs)
     
     def test(self):
         self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
@@ -193,7 +193,7 @@ class Tour(models.Model):
         self.included = self.included.replace("\r\n\r\n", "")
         self.excluded = self.excluded.replace("\r\n\r\n", "")
         self.description = self.description.replace("\r\n\r\n", "")
-        self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
+        # self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
         return super().save(*args, **kwargs)
 
 
