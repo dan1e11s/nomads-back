@@ -130,6 +130,7 @@ class ArticleCatsAdmin(admin.ModelAdmin):
     list_display = ("name",)
     list_display_links = ("name",)
     list_filter = ("lang",)
+    prepopulated_fields = {"slug": ("name",)}
 
 
 class ArticleImagesInline(admin.StackedInline):
@@ -144,6 +145,7 @@ class ArticlesAdmin(admin.ModelAdmin):
     list_filter = ("cat", "lang",)
     search_fields = ("title", "")
     inlines = (ArticleImagesInline,)
+    prepopulated_fields = {"slug": ("title",)}
     
     def get_html_poster(self, object):
         if object.poster:

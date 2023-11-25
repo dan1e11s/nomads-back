@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from src.tours.models import Tour
 from ckeditor.fields import RichTextField
+from django.utils.text import slugify
+from unidecode import unidecode
 
 
 class Information(models.Model):
@@ -276,9 +278,15 @@ class ArticleCats(models.Model):
     
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=255)
+    slug = models.SlugField(_("Slug"))
     
     def __str__(self) -> str:
         return self.name
+
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(unidecode(self.name))
+    #     return super().save(*args, **kwargs)
     
     class Meta:
         verbose_name = _("Категория Статьи")
@@ -310,6 +318,7 @@ class Articles(models.Model):
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     cat = models.ForeignKey(ArticleCats, verbose_name="Категория", on_delete=models.CASCADE, related_name="articles")
     title = models.CharField(_("Заголовок"), max_length=255)
+    slug = models.SlugField(_("Slug"))
     short_desc = RichTextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
     poster = models.ImageField(_("Постер"), upload_to="article_posters", null=True, blank=True)
@@ -319,7 +328,12 @@ class Articles(models.Model):
     
     def __str__(self) -> str:
         return self.title
-    
+
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(unidecode(self.title))
+    #     return super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = _("Статья")
         verbose_name_plural = _("Статьи")
