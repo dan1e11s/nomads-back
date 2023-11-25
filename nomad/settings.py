@@ -111,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGES = [("en", _("English")), ("ru", _("Russian"))]
 
-LANGUAGE_CODE = "en"
+LANGUAGE_CODE = "ru"
 
 TIME_ZONE = "Asia/Bishkek"
 
@@ -243,14 +243,14 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
 # Django debug toolbar
-def show_toolbar(request):
-    return True
+# def show_toolbar(request):
+#     return True
 
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": show_toolbar,
-    "INTERCEPT_REDIRECTS": False,
-}
+# DEBUG_TOOLBAR_CONFIG = {
+#     "SHOW_TOOLBAR_CALLBACK": show_toolbar,
+#     "INTERCEPT_REDIRECTS": False,
+# }
 
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
