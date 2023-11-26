@@ -184,6 +184,14 @@ class ArticleListSerializer(serializers.ModelSerializer):
         return None
 
 
+class ArticlesListSerializer(serializers.ModelSerializer):
+    articles = ArticleListSerializer(many=True)
+
+    class Meta:
+        model = ArticleCats
+        fields = ["id", "slug", "articles"]
+
+
 class ArticleMainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Articles
