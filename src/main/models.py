@@ -4,6 +4,7 @@ from src.tours.models import Tour
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
 from unidecode import unidecode
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Information(models.Model):
@@ -329,8 +330,18 @@ class Articles(models.Model):
         return self.title
 
     # def save(self, *args, **kwargs):
-    #     self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
-    #     return super().save(*args, **kwargs)
+    #     if self.link:
+    #         tourid = self.link.split('/')[-1]
+    #         try:
+    #             tour = Tour.objects.get(id=int(tourid))
+    #             self.link = f"https://nomadslife.travel/cuaranteed-tours/{tour.slug}"
+    #             return super().save(*args, **kwargs)
+    #         except ObjectDoesNotExist:
+    #             # self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
+    #             # return super().save(*args, **kwargs)
+    #             pass
+    #         except ValueError:
+    #             pass
 
     class Meta:
         verbose_name = _("Статья")
