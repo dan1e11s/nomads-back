@@ -32,7 +32,8 @@ class Category(models.Model):
         return self.name
     
     # def save(self, *args, **kwargs):
-    #     self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
+    #     # self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
+    #     self.img_title = ""
     #     return super().save(*args, **kwargs)
     
     def test(self):
@@ -95,6 +96,11 @@ class Images(models.Model):
 
     def __str__(self):
         return self.location or "Image"
+    
+    # def save(self, *args, **kwargs):
+    #     if self.tour:
+    #         self.alt = self.tour.title
+    #         return super().save(*args, **kwargs)
     
     class Meta:
         verbose_name = _("Изображение")

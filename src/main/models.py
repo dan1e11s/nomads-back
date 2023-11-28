@@ -296,6 +296,8 @@ class ArticleCats(models.Model):
 class ArticleImages(models.Model):
     article = models.ForeignKey("Articles", on_delete=models.CASCADE, related_name="art_images")
     img = models.ImageField(_("Изображение"), upload_to="articles")
+    alt = models.CharField(null=True, blank=True)
+    img_title = models.CharField(null=True, blank=True)
     
     def __str__(self) -> str:
         return ""
@@ -322,6 +324,8 @@ class Articles(models.Model):
     short_desc = RichTextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
     poster = models.ImageField(_("Постер"), upload_to="article_posters", null=True, blank=True)
+    alt = models.CharField(null=True, blank=True)
+    img_title = models.CharField(null=True, blank=True)
     link = models.URLField(_("Ссылка"), null=True, blank=True)
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
     views = models.IntegerField(_("Просмотры"), default=1)
@@ -378,6 +382,8 @@ class GalleryImages(models.Model):
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, related_name="gallery_images")
     name = models.CharField(_("Описание"), max_length=255, null=True, blank=True)
     img = models.ImageField(_("Изображение"), upload_to="gallery")
+    alt = models.CharField(null=True, blank=True)
+    img_title = models.CharField(null=True, blank=True)
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
     
     def __str__(self) -> str:

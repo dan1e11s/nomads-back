@@ -155,7 +155,7 @@ class ArticleImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ArticleImages
-        fields = ["img"]
+        fields = ["img", "alt", "img_title"]
 
     def get_img(self, obj):
         request = self.context.get("request")
@@ -176,6 +176,8 @@ class ArticleListSerializer(serializers.ModelSerializer):
             "short_desc",
             "full_desc",
             "poster",
+            "alt",
+            "img_title"
         ]
 
     def get_poster(self, obj):
@@ -219,6 +221,8 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
             "short_desc",
             "full_desc",
             "poster",
+            "alt",
+            "img_title",
             "link",
             "views",
             "created_at",
@@ -240,7 +244,7 @@ class GalleryImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GalleryImages
-        fields = ["id", "name", "img", "created_at"]
+        fields = ["id", "name", "img", "alt", "img_title", "created_at"]
 
     def get_img(self, obj):
         if obj.img:
