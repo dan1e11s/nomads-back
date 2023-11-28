@@ -334,18 +334,12 @@ class Articles(models.Model):
         return self.title
 
     # def save(self, *args, **kwargs):
-    #     if self.link:
-    #         tourid = self.link.split('/')[-1]
-    #         try:
-    #             tour = Tour.objects.get(id=int(tourid))
-    #             self.link = f"https://nomadslife.travel/cuaranteed-tours/{tour.slug}"
-    #             return super().save(*args, **kwargs)
-    #         except ObjectDoesNotExist:
-    #             # self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
-    #             # return super().save(*args, **kwargs)
-    #             pass
-    #         except ValueError:
-    #             pass
+    #     from django.db.utils import IntegrityError
+    #     try:
+    #         self.slug = f"{slugify(unidecode(self.title))}-{self.lang}"
+    #         return super().save(*args, **kwargs)
+    #     except IntegrityError:
+    #         pass
 
     class Meta:
         verbose_name = _("Статья")

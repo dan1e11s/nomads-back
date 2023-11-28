@@ -8,7 +8,7 @@ class PricesInline(admin.TabularInline):
     extra = 0
 
 
-class ImagesIncline(admin.TabularInline):
+class ImagesIncline(admin.StackedInline):
     model = Images
     extra = 0
 

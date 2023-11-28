@@ -17,6 +17,8 @@ class CarPricesSerializer(serializers.ModelSerializer):
 
 class CarListSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
+    alt = serializers.CharField(read_only=True)
+    img_title = serializers.CharField(read_only=True)
     price = serializers.SerializerMethodField()
     brand_name = serializers.CharField(source="brand.name", read_only=True)
 
@@ -31,6 +33,8 @@ class CarListSerializer(serializers.ModelSerializer):
             "rating",
             "price",
             "img",
+            "alt",
+            "img_title"
         ]
 
     def get_img(self, obj):
@@ -45,6 +49,16 @@ class CarListSerializer(serializers.ModelSerializer):
             min_price = min(i.price for i in prices)
             return min_price
         return None
+
+    def to_representation(self, instance):
+        image = instance.car_images.first()
+
+        representation = super().to_representation(instance)
+
+        if image:
+            representation["alt"] = image.alt
+            representation["img_title"] = image.img_title
+        return representation
 
 
 class CarTypeSerializer(serializers.ModelSerializer):
