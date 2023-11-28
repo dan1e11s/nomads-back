@@ -53,7 +53,7 @@ class PricesSerializer(serializers.ModelSerializer):
 class ImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Images
-        fields = ["id", "location", "img"]
+        fields = ["id", "location", "img", "alt", "img_title"]
 
 
 class RouteSerializer(serializers.ModelSerializer):
@@ -147,10 +147,10 @@ class TourDetailSerializer(serializers.ModelSerializer):
 
 class GuaranteedToursSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
+    alt = serializers.CharField(read_only=True)
+    img_title = serializers.CharField(read_only=True)
     avg_rating = serializers.FloatField()
     total_reviews = serializers.IntegerField()
-    cat_name = serializers.SerializerMethodField()
-    type_name = serializers.SerializerMethodField(read_only=True)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     start_day = serializers.DateField(read_only=True, format="%Y, %d %B")
     currency = serializers.CharField(read_only=True)
@@ -159,16 +159,16 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
         model = Tour
         fields = [
             "id",
-            "cat_name",
             "title",
             "slug",
             "type",
-            "type_name",
             "short_desc",
             "duration",
             "avg_rating",
             "total_reviews",
             "img",
+            "alt",
+            "img_title",
             "price",
             "start_day",
             "currency",
@@ -178,28 +178,31 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
         today = date.today()
 
         price = instance.prices.filter(status=1).order_by("start").first()
+        image = instance.images.first()
 
         representation = super().to_representation(instance)
 
         if price:
+            representation["alt"] = image.alt
+            representation["img_title"] = image.img_title
             representation["price"] = price.price
             representation["currency"] = price.currency
             representation["start_day"] = price.start.strftime("%Y, %d %B")
 
         return representation
 
-    def get_type_name(self, obj):
-        return dict(Tour.TYPE_CHOICES).get(obj.type)
-
-    def get_cat_name(self, obj):
-        if obj.cat:
-            return obj.cat.name
 
     def get_img(self, obj):
         images = obj.images.all()
         if images:
             return f"https://nomadslife.travel{images[0].img.url}"
         return None
+    
+    # def get_alt(self, obj):
+    #     images = obj.images.all()
+    #     if images:
+    #         return images[0].alt
+    #     return None
 
 
 class SliderSerializer(serializers.ModelSerializer):
@@ -223,7 +226,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "name", "img", "tours", "slug"]
+        fields = ["id", "name", "slug", "alt", "img_title", "img", "tours",]
 
     def get_img(self, obj):
         if obj.img:
@@ -235,18 +238,21 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 class MainToursSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
+    alt = serializers.CharField(read_only=True)
+    img_title = serializers.CharField(read_only=True)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     start_day = serializers.DateField(read_only=True, format="%d %B")
     currency = serializers.CharField(read_only=True)
 
     class Meta:
         model = Tour
-        fields = ["id", "title", "slug", "price", "start_day", "img", "currency", "duration"]
+        fields = ["id", "title", "slug", "price", "start_day", "img", "alt", "img_title", "currency", "duration"]
 
     def to_representation(self, instance):
         today = date.today()
 
         price = instance.prices.filter(status=1).order_by("start").first()
+        image = instance.images.first()
 
         representation = super().to_representation(instance)
 
@@ -255,6 +261,8 @@ class MainToursSerializer(serializers.ModelSerializer):
             representation["currency"] = price.currency
             representation["start_day"] = price.start.strftime("%Y, %d %B")
             representation["status"] = price.status
+            representation["img_title"] = image.img_title
+            representation["alt"] = image.alt
 
         return representation
 

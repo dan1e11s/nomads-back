@@ -48,6 +48,7 @@ class TourAdmin(admin.ModelAdmin):
         "title",
         "type",
         "duration",
+        "slug",
     )
     search_help_text = "Поиск по всем данным"
     readonly_fields = ("views",)
@@ -88,6 +89,7 @@ class CategoryAdmin(admin.ModelAdmin):
     )
     list_display_links = list_display
     list_filter = ("lang",)
+    search_fields = ("slug", "title",)
 
     # def get_html_img(self, object):
     #     if object.img:

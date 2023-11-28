@@ -21,6 +21,8 @@ class Category(models.Model):
     name = models.CharField(_("Название"), max_length=200)
     slug = models.SlugField(_("Slug"), max_length=1000)
     img = models.ImageField(_("Изображение"), upload_to="cat_images", null=True, blank=True)
+    alt = models.CharField(null=True, blank=True)
+    img_title = models.CharField(null=True, blank=True)
 
     class Meta:
         verbose_name = _("Категория")
@@ -88,6 +90,8 @@ class Images(models.Model):
     tour = models.ForeignKey("Tour", verbose_name=_("Тур"), on_delete=models.SET_NULL, null=True, blank=True, related_name="images")
     location = models.CharField(_("Место изображение"), max_length=100, null=True, blank=True)
     img = models.ImageField(_("Изображение"), upload_to="tour_images", null=True, blank=True)
+    alt = models.CharField(null=True, blank=True)
+    img_title = models.CharField(null=True, blank=True)
 
     def __str__(self):
         return self.location or "Image"
@@ -211,8 +215,9 @@ class Slider(models.Model):
     title = models.CharField(_("Заголовок"), max_length=255, null=True, blank=True)
     subtitle = models.CharField(_("Подзаголовок"), max_length=255, null=True, blank=True)
     img = models.ImageField(_("Изображение"), upload_to="slider", null=True, blank=True)
-    tour = models.OneToOneField(Tour, verbose_name=_("Тур на который ссылается слайдер"), on_delete=models.CASCADE,
-                                null=True, blank=True)
+    alt = models.CharField(null=True, blank=True)
+    img_title = models.CharField(null=True, blank=True)
+    link = models.URLField(_("Ссылка"), null=True, blank=True)
     is_active = models.BooleanField(_("Активность"), default=False)
 
     class Meta:
