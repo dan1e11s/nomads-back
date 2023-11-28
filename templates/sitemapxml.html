@@ -40,4 +40,11 @@
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
+    {% for article in articles %}
+    <url>
+        <loc>https://nomadslife.travel/article/{{ article.slug }}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    {% endfor %}
 </urlset>

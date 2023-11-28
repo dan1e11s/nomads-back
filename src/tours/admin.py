@@ -31,6 +31,7 @@ class TourAdmin(admin.ModelAdmin):
         "type",
         "cat",
         "top",
+        "get_html_img"
     )
     list_display_links = (
         "id",
@@ -53,6 +54,13 @@ class TourAdmin(admin.ModelAdmin):
     search_help_text = "Поиск по всем данным"
     readonly_fields = ("views",)
     inlines = (PricesInline, RouteInline, ImagesInline)
+
+    def get_html_img(self, object):
+        if object.images.exists():
+            return mark_safe(f"<img src='{object.images.first().img.url}' width='130'>")
+        return None
+
+    get_html_img.short_description = 'Фотография'
 
 
 @admin.register(TourReviews)
@@ -86,16 +94,17 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "name",
+        "get_html_img"
     )
     list_display_links = list_display
     list_filter = ("lang",)
     search_fields = ("slug", "title",)
 
-    # def get_html_img(self, object):
-    #     if object.img:
-    #         return mark_safe(f"<img src='{object.img.url}' width='70'>")
+    def get_html_img(self, object):
+        if object.img:
+            return mark_safe(f"<img src='{object.img.url}' width='70'>")
 
-    # get_html_img.short_description = 'Фотография'
+    get_html_img.short_description = 'Фотография'
 
 
 @admin.register(Slider)

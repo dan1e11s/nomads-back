@@ -11,7 +11,8 @@ from .views import (
     ArticleDetailView,
     ArticlesListAPIView,
     GalleryListView,
-    GalleryFilterView
+    GalleryFilterView,
+    SitemapView
 )
 
 
@@ -28,4 +29,7 @@ urlpatterns = [
     path("<str:lang_code>/main/articles", ArticlesListAPIView.as_view(), name="articles"),
     path("<str:lang_code>/gallery/list", GalleryListView.as_view(), name="gallery-list"),
     path("gallery/detail/<int:gallery_id>", GalleryFilterView.as_view(), name="gallery-list-id"),
+
+    # Sitemap
+    path("sitemap.xml", SitemapView.as_view(), name="sitemap")
 ]
