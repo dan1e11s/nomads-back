@@ -11,5 +11,7 @@ urlpatterns = [
     path("<str:lang_code>/tour/main", MainPageAPIView.as_view(), name="main"),
     path("tour/request", TourRequestAPIView.as_view(), name="request-tour"),
     path("<str:lang_code>/tour/categories", CategoriesAPIView.as_view(), name="categories"),
-    path("<str:lang_code>/tour/rightbar", ToursView.as_view(), name='tours')
+    path("<str:lang_code>/tour/rightbar", ToursView.as_view(), name='tours'),
+    path('compressed-tour-image/<int:image_id>', CompressedTourImageView.as_view(), name='compressed_tour_image'),
+    path('compressed-tour-cat-image/<int:cat_id>', CompressedTourCatImageView.as_view(), name='compressed_tour_cat_image'),
 ]

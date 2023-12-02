@@ -1,4 +1,3 @@
-from datetime import date
 from rest_framework.response import Response
 from rest_framework import generics, filters, views
 from django.db.models import Avg, Count, Q
@@ -7,6 +6,11 @@ from .serializers import *
 from .pagination import GuaranteedToursPagination
 from src.tg_bot.bot import send_tour_review, tour_request
 from asyncio import run
+
+from PIL import Image
+from io import BytesIO
+from django.http import FileResponse
+from rest_framework.generics import get_object_or_404
 
 
 class TourListAPIVIew(generics.ListAPIView):
@@ -158,3 +162,43 @@ class ToursView(generics.ListAPIView):
     
     def get_queryset(self):
         return Category.objects.filter(lang=self.kwargs["lang_code"])
+
+
+
+class CompressedTourImageView(views.APIView):
+    def get(self, request, image_id):
+        image = get_object_or_404(Images, id=image_id)
+        compressed_image = self.compress_image(image.img)
+
+        response = FileResponse(compressed_image, content_type='image/webp')
+        return response
+
+    def compress_image(self, image):
+        img = Image.open(image.path)
+
+        img.thumbnail((500, 500))
+        output = BytesIO()
+        img.save(output, format='WEBP', quality=50)
+        output.seek(0)
+
+        return output
+
+    
+class CompressedTourCatImageView(views.APIView):
+    def get(self, request, cat_id):
+        obj = get_object_or_404(Category, id=cat_id)
+        compressed_image = self.compress_image(obj.img)
+
+        response = FileResponse(compressed_image, content_type='image/webp')
+        return response
+
+    def compress_image(self, image):
+        img = Image.open(image.path)
+
+        img.thumbnail((600, 600))
+        output = BytesIO()
+        img.save(output, format='WEBP', quality=50)
+        output.seek(0)
+
+        return output
+    

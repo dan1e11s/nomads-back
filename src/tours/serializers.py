@@ -1,11 +1,10 @@
+import sys
+from datetime import date
+from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 from PIL import Image
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.files.base import ContentFile
-from datetime import date
-from rest_framework import serializers
-from rest_framework.response import Response
-from django.utils.translation import gettext_lazy as _
 from .models import *
 
 
@@ -185,11 +184,11 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
         image = instance.images.first()
 
         representation = super().to_representation(instance)
-        representation["img"] = f"https://nomadslife.travel{image.img.url}"
+        representation["img"] = f"https://nomadslife.travel/api/compressed-tour-image/{image.id}"
+        representation["alt"] = image.alt
+        representation["img_title"] = image.img_title
 
         if price:
-            representation["alt"] = image.alt
-            representation["img_title"] = image.img_title
             representation["price"] = price.price
             representation["currency"] = price.currency
             representation["start_day"] = price.start.strftime("%Y, %d %B")
@@ -213,23 +212,21 @@ class MainCatToursSerializer(serializers.ModelSerializer):
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
-    img = serializers.SerializerMethodField()
+    img = serializers.URLField(read_only=True)
     tours = MainCatToursSerializer(many=True)
 
     class Meta:
         model = Category
         fields = ["id", "name", "slug", "alt", "img_title", "img", "tours",]
 
-    def get_img(self, obj):
-        if obj.img:
-            request = self.context.get("request")
-            if request:
-                return request.build_absolute_uri(obj.img.url)
-        return None
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation["img"] = f"https://nomadslife.travel/api/compressed-tour-cat-image/{instance.id}"
+        return representation
 
 
 class MainToursSerializer(serializers.ModelSerializer):
-    img = serializers.SerializerMethodField()
+    img = serializers.URLField(read_only=True)
     alt = serializers.CharField(read_only=True)
     img_title = serializers.CharField(read_only=True)
     price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
@@ -241,12 +238,15 @@ class MainToursSerializer(serializers.ModelSerializer):
         fields = ["id", "title", "slug", "price", "start_day", "img", "alt", "img_title", "currency", "duration"]
 
     def to_representation(self, instance):
-        today = date.today()
 
         price = instance.prices.filter(status=1).order_by("start").first()
         image = instance.images.first()
 
         representation = super().to_representation(instance)
+
+        representation["img"] = f"https://nomadslife.travel/api/compressed-tour-image/{image.id}"
+        representation["img_title"] = image.img_title
+        representation["alt"] = image.alt
 
         if price:
             representation["price"] = price.price
@@ -257,12 +257,6 @@ class MainToursSerializer(serializers.ModelSerializer):
             representation["alt"] = image.alt
 
         return representation
-
-    def get_img(self, obj):
-        first_img = obj.images.all()
-        if first_img:
-            return f"https://nomadslife.travel{first_img[0].img.url}"
-        return None
 
 
 class UpcomingToursSerializer(serializers.ModelSerializer):

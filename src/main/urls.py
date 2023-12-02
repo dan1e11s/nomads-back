@@ -12,7 +12,8 @@ from .views import (
     ArticlesListAPIView,
     GalleryListView,
     GalleryFilterView,
-    SitemapView
+    SitemapView,
+    CompressedArticleImageView
 )
 
 
@@ -29,6 +30,8 @@ urlpatterns = [
     path("<str:lang_code>/main/articles", ArticlesListAPIView.as_view(), name="articles"),
     path("<str:lang_code>/gallery/list", GalleryListView.as_view(), name="gallery-list"),
     path("gallery/detail/<int:gallery_id>", GalleryFilterView.as_view(), name="gallery-list-id"),
+    path('compressed-article-image/<int:article_id>', CompressedArticleImageView.as_view(), name='compressed_article_image'),
+
 
     # Sitemap
     path("sitemap.xml", SitemapView.as_view(), name="sitemap")

@@ -182,7 +182,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
     def get_poster(self, obj):
         if obj.poster:
-            return f"https://nomadslife.travel{obj.poster.url}"
+            return f"https://nomadslife.travel/api/compressed-article-image/{obj.id}"
         return None
 
 

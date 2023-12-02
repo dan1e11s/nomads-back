@@ -1,8 +1,10 @@
-from typing import Any
+from PIL import Image
+from io import BytesIO
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
 from rest_framework.views import APIView
+from django.http import FileResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import TemplateView
 from .serializers import (
@@ -199,3 +201,22 @@ class SitemapView(TemplateView):
             "jp",
         }
         return context
+    
+
+class CompressedArticleImageView(APIView):
+    def get(self, request, article_id):
+        obj = generics.get_object_or_404(Articles, id=article_id)
+        compressed_image = self.compress_image(obj.poster)
+
+        response = FileResponse(compressed_image, content_type='image/webp')
+        return response
+
+    def compress_image(self, image):
+        img = Image.open(image.path)
+
+        img.thumbnail((500, 500))
+        output = BytesIO()
+        img.save(output, format='WEBP', quality=50)
+        output.seek(0)
+
+        return output
