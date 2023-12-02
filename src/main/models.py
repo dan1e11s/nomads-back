@@ -2,9 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from src.tours.models import Tour
 from ckeditor.fields import RichTextField
-from django.utils.text import slugify
-from unidecode import unidecode
-from django.core.exceptions import ObjectDoesNotExist
+from django_resized import ResizedImageField
 
 
 class Information(models.Model):
@@ -280,6 +278,8 @@ class ArticleCats(models.Model):
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=255)
     slug = models.SlugField(_("Slug"), max_length=1000, unique=True)
+    created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
+    last_mod = models.DateTimeField(_("Последняя модификация"), auto_now=True)
     
     def __str__(self) -> str:
         return self.name
@@ -295,7 +295,7 @@ class ArticleCats(models.Model):
 
 class ArticleImages(models.Model):
     article = models.ForeignKey("Articles", on_delete=models.CASCADE, related_name="art_images")
-    img = models.ImageField(_("Изображение"), upload_to="articles")
+    img = ResizedImageField(_("Изображение"), upload_to="articles", force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
     
@@ -323,12 +323,13 @@ class Articles(models.Model):
     slug = models.SlugField(_("Slug"), max_length=1000, unique=True)
     short_desc = RichTextField(_("Краткое описание"))
     full_desc = RichTextField(_("Полное описание"))
-    poster = models.ImageField(_("Постер"), upload_to="article_posters", null=True, blank=True)
+    poster = ResizedImageField(_("Постер"), upload_to="article_posters", null=True, blank=True, force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
     link = models.URLField(_("Ссылка"), null=True, blank=True)
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
     views = models.IntegerField(_("Просмотры"), default=1)
+    last_mod = models.DateTimeField(_("Последняя модификация"), auto_now=True)
     
     def __str__(self) -> str:
         return self.title
@@ -361,6 +362,8 @@ class Gallery(models.Model):
     youtube_link = models.URLField(_("Ссылка на ютуб"), null=True, blank=True)
     # poster = models.ImageField(_(""), upload_to='test', default='default_profile_photo.png')
     # video = models.FileField(_("Видео"), upload_to="videos", null=True, blank=True)
+    created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
+    last_mod = models.DateTimeField(_("Последняя модификация"), auto_now=True)
     
     def __str__(self) -> str:
         if self.name:
@@ -375,7 +378,7 @@ class Gallery(models.Model):
 class GalleryImages(models.Model):
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, related_name="gallery_images")
     name = models.CharField(_("Описание"), max_length=255, null=True, blank=True)
-    img = models.ImageField(_("Изображение"), upload_to="gallery")
+    img = ResizedImageField(_("Изображение"), upload_to="gallery", force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
     created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)

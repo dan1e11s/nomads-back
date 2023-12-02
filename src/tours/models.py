@@ -5,6 +5,7 @@ from ckeditor.fields import RichTextField
 from django.urls import reverse
 from django.utils.text import slugify
 from unidecode import unidecode
+from django_resized import ResizedImageField
 
 
 class Category(models.Model):
@@ -20,9 +21,11 @@ class Category(models.Model):
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en", max_length=2)
     name = models.CharField(_("Название"), max_length=200)
     slug = models.SlugField(_("Slug"), max_length=1000)
-    img = models.ImageField(_("Изображение"), upload_to="cat_images", null=True, blank=True)
+    img = ResizedImageField(_("Изображение"), upload_to="cat_images", null=True, blank=True, force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
+    created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
+    last_mod = models.DateTimeField(_("Последняя модификация"), auto_now=True)
 
     class Meta:
         verbose_name = _("Категория")
@@ -31,10 +34,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
-    # def save(self, *args, **kwargs):
-    #     # self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
-    #     self.img_title = ""
-    #     return super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        # self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
+        self.img_title = self.name
+        return super().save(*args, **kwargs)
     
     def test(self):
         self.slug = f"{slugify(unidecode(self.name))}-{self.lang}"
@@ -90,7 +93,7 @@ class Route(models.Model):
 class Images(models.Model):
     tour = models.ForeignKey("Tour", verbose_name=_("Тур"), on_delete=models.SET_NULL, null=True, blank=True, related_name="images")
     location = models.CharField(_("Место изображение"), max_length=100, null=True, blank=True)
-    img = models.ImageField(_("Изображение"), upload_to="tour_images", null=True, blank=True)
+    img = ResizedImageField(_("Изображение"), upload_to="tour_images", null=True, blank=True, force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
 
@@ -99,7 +102,8 @@ class Images(models.Model):
     
     # def save(self, *args, **kwargs):
     #     if self.tour:
-    #         self.alt = self.tour.title
+    #         self.alt = f"Picture - {self.tour.title}"
+    #         # self.img_title = self.tour.title
     #         return super().save(*args, **kwargs)
     
     class Meta:
@@ -188,6 +192,8 @@ class Tour(models.Model):
     top = models.BooleanField(_("Отображения в главной странице"), default=False)
     views = models.IntegerField(_("Просмотры"), default=0)
     youtube_link = models.URLField(_("Ссылка на ютуб"), null=True, blank=True)
+    created_at = models.DateTimeField(_("Дата создания"), auto_now_add=True)
+    last_mod = models.DateTimeField(_("Последняя модификация"), auto_now=True)
 
     class Meta:
         verbose_name = _("Тур")
@@ -220,7 +226,7 @@ class Slider(models.Model):
     lang = models.CharField(_("Язык"), choices=LANG_CHOICES, default="en")
     title = models.CharField(_("Заголовок"), max_length=255, null=True, blank=True)
     subtitle = models.CharField(_("Подзаголовок"), max_length=255, null=True, blank=True)
-    img = models.ImageField(_("Изображение"), upload_to="slider", null=True, blank=True)
+    img = ResizedImageField(_("Изображение"), upload_to="slider", null=True, blank=True, force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
     link = models.URLField(_("Ссылка"), null=True, blank=True)

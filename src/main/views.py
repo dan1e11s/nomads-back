@@ -186,5 +186,16 @@ class SitemapView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
-        context["articles"] = Articles.objects.order_by("lang")
+        context["articles"] = Articles.objects.order_by("last_mod")
+        context["article_cats"] = ArticleCats.objects.order_by("last_mod")
+        context["tours"] = Tour.objects.order_by("last_mod")
+        context["tour_cats"] = Category.objects.order_by("last_mod")
+        context["languages"] = {
+            "en",
+            "ru",
+            "de",
+            "fr",
+            "es",
+            "jp",
+        }
         return context

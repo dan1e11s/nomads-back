@@ -1,4 +1,7 @@
-import locale
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.base import ContentFile
 from datetime import date
 from rest_framework import serializers
 from rest_framework.response import Response
@@ -146,7 +149,7 @@ class TourDetailSerializer(serializers.ModelSerializer):
 
 
 class GuaranteedToursSerializer(serializers.ModelSerializer):
-    img = serializers.SerializerMethodField()
+    img = serializers.URLField(read_only=True)
     alt = serializers.CharField(read_only=True)
     img_title = serializers.CharField(read_only=True)
     avg_rating = serializers.FloatField()
@@ -174,6 +177,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
             "currency",
         ]
 
+
     def to_representation(self, instance):
         today = date.today()
 
@@ -181,6 +185,7 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
         image = instance.images.first()
 
         representation = super().to_representation(instance)
+        representation["img"] = f"https://nomadslife.travel{image.img.url}"
 
         if price:
             representation["alt"] = image.alt
@@ -190,19 +195,6 @@ class GuaranteedToursSerializer(serializers.ModelSerializer):
             representation["start_day"] = price.start.strftime("%Y, %d %B")
 
         return representation
-
-
-    def get_img(self, obj):
-        images = obj.images.all()
-        if images:
-            return f"https://nomadslife.travel{images[0].img.url}"
-        return None
-    
-    # def get_alt(self, obj):
-    #     images = obj.images.all()
-    #     if images:
-    #         return images[0].alt
-    #     return None
 
 
 class SliderSerializer(serializers.ModelSerializer):

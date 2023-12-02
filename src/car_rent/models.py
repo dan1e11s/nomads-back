@@ -2,6 +2,7 @@ from datetime import timedelta
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ckeditor.fields import RichTextField
+from django_resized import ResizedImageField
 
 
 class CarType(models.Model):
@@ -38,7 +39,7 @@ class Brand(models.Model):
 
 class Images(models.Model):
     car = models.ForeignKey("Car", verbose_name=_("Авто"), on_delete=models.CASCADE, related_name="car_images")
-    img = models.ImageField(_("Изображение авто"), upload_to="car_images", null=True, blank=True)
+    img = ResizedImageField(_("Изображение авто"), upload_to="car_images", null=True, blank=True, force_format="WEBP", quality=50)
     alt = models.CharField(null=True, blank=True)
     img_title = models.CharField(null=True, blank=True)
 

@@ -127,11 +127,12 @@ class CreateOwnTourAdmin(admin.ModelAdmin):
 
 @admin.register(ArticleCats)
 class ArticleCatsAdmin(admin.ModelAdmin):
-    list_display = ("id", "name",)
+    list_display = ("id", "name", "created_at")
     list_display_links = list_display
     list_filter = ("lang",)
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ("name", "slug",)
+    readonly_fields = ("created_at", "last_mod")
 
 
 class ArticleImagesInline(admin.StackedInline):
@@ -147,6 +148,7 @@ class ArticlesAdmin(admin.ModelAdmin):
     search_fields = ("title", "slug",)
     inlines = (ArticleImagesInline,)
     prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("created_at", "last_mod")
     
     def get_html_poster(self, object):
         if object.poster:
@@ -165,3 +167,4 @@ class GalleryAdmin(admin.ModelAdmin):
     list_display = ("id", "name")
     list_display_links = list_display
     inlines = (GalleryImagesInline,)
+    readonly_fields = ("created_at", "last_mod")

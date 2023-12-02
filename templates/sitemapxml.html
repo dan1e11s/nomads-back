@@ -1,49 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {% for lang in languages %}
     <url>
-        <loc>https://nomadslife.travel/</loc>
+        <loc>https://nomadslife.travel/{{ lang }}</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://nomadslife.travel/{{ lang }}/cuaranteed-tours</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://nomadslife.travel/{{ lang }}/create-tours</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://nomadslife.travel/cuaranteed-tours</loc>
+        <loc>https://nomadslife.travel/{{ lang }}/gallery</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://nomadslife.travel/{{ lang }}/rent-car</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://nomadslife.travel/{{ lang }}/about-the-company</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://nomadslife.travel/create-tours</loc>
+        <loc>https://nomadslife.travel/{{ lang }}/booking-terms</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://nomadslife.travel/gallery</loc>
+        <loc>https://nomadslife.travel/{{ lang }}/privacy-policy</loc>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
-    <url>
-        <loc>https://nomadslife.travel/rent-car</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://nomadslife.travel/about-the-company</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://nomadslife.travel/booking-terms</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
-        <loc>https://nomadslife.travel/privacy-policy</loc>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
+
+    {% endfor %}
     {% for article in articles %}
     <url>
-        <loc>https://nomadslife.travel/article/{{ article.slug }}</loc>
-        <changefreq>weekly</changefreq>
+        <loc>https://nomadslife.travel/{{ article.lang }}/article-list/{{ article.slug }}</loc>
+        <changefreq>daily</changefreq>
+        <lastmod>{{ article.last_mod|date:"c" }}</lastmod>
+        <priority>1.0</priority>
+    </url>
+    {% endfor %}
+
+    {% for article_cat in article_cats %}
+    <url>
+        <loc>https://nomadslife.travel/{{ article_cat.lang }}/article/{{ article_cat.slug }}</loc>
+        <changefreq>daily</changefreq>
+        <lastmod>{{ article_cat.last_mod|date:"c"}}</lastmod>
+        <priority>1.0</priority>
+    </url>
+    {% endfor %}
+
+    {% for tour in tours %}
+    <url>
+        <loc>https://nomadslife.travel/{{ tour.lang }}/cuaranteed-tours/{{ tour.slug }}</loc>
+        <changefreq>daily</changefreq>
+        <lastmod>{{ tour.last_mod|date:"c" }}</lastmod>
+        <priority>1.0</priority>
+    </url>
+    {% endfor %}
+
+    {% for tour_cat in tour_cats %}
+    <url>
+        <loc>https://nomadslife.travel/{{ tour_cat.lang }}/categories/{{ tour_cat.slug }}</loc>
+        <changefreq>daily</changefreq>
+        <lastmod>{{ tour_cat.last_mod|date:"c" }}</lastmod>
         <priority>1.0</priority>
     </url>
     {% endfor %}
