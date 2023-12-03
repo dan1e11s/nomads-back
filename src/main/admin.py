@@ -159,7 +159,7 @@ class ArticlesAdmin(admin.ModelAdmin):
 
 class GalleryImagesInline(admin.StackedInline):
     model = GalleryImages
-    extra = 0
+    extra = 30
 
 
 @admin.register(Gallery)

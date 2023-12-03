@@ -119,7 +119,7 @@ class MainPageAPIView(views.APIView):
     def get(self, request, lang_code, *args, **kwargs):
         tours = Tour.objects.filter(top=True, lang=lang_code).prefetch_related("images", "prices")
         upcoming_tours = (
-            Tour.objects.filter(type=2, lang=lang_code)
+            Tour.objects.filter(type=1, lang=lang_code)
             .prefetch_related("images", "prices")
             .order_by("-id")[:4]
         )
