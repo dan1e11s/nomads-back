@@ -164,7 +164,7 @@ class GalleryImagesInline(admin.StackedInline):
 
 @admin.register(Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("id", "name", "lang")
     list_display_links = list_display
     inlines = (GalleryImagesInline,)
     readonly_fields = ("created_at", "last_mod")
